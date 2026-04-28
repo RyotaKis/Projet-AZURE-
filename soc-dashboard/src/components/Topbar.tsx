@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Search, Bell, User, Cpu, Activity, Wifi } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -18,7 +18,7 @@ export const Topbar: React.FC<TopbarProps> = ({ stats }) => {
         <h1 className="font-bold text-lg tracking-tight hidden md:block">AZUR<span className="text-[#0052FF] font-black">+</span> <span className="text-[10px] font-normal text-slate-400 ml-2 uppercase tracking-widest leading-none">Centre de Commandement</span></h1>
         <div className="h-4 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
         <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> SYSTÈME OPÉRATIONNEL 
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> SYSTÃˆME OPÃ‰RATIONNEL 
         </div>
       </div>
 
@@ -41,7 +41,7 @@ export const Topbar: React.FC<TopbarProps> = ({ stats }) => {
             <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
               <User className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-tight hidden lg:block">Opérateur Principal</span>
+            <span className="text-[10px] font-bold uppercase tracking-tight hidden lg:block">OpÃ©rateur Principal</span>
           </div>
         </div>
       </div>

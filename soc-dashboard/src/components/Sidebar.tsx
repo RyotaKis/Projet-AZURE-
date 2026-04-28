@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
   LayoutDashboard, 
   ShieldAlert, 
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Overview', Actives: true },
+  { icon: LayoutDashboard, label: 'Overview', active: true },
   { icon: ShieldAlert, label: 'Alerts', badge: 12 },
   { icon: History, label: 'Transactions' },
   { icon: MapIcon, label: 'Geo-Watch' },

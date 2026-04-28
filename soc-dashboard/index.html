@@ -7,6 +7,14 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.addEventListener('error', function(e) {
+        document.body.innerHTML += '<div style="color:red; background:white; position:absolute; z-index:9999; top:0; left:0; width:100%; height:100vh; padding: 20px; overflow: auto; font-family: monospace;"><h2>Erreur JS:</h2><pre>' + e.message + '\n\n' + e.filename + ':' + e.lineno + '\n\n' + e.error?.stack + '</pre></div>';
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        document.body.innerHTML += '<div style="color:red; background:white; position:absolute; z-index:9999; top:0; left:0; width:100%; height:100vh; padding: 20px; overflow: auto; font-family: monospace;"><h2>Erreur Asynchrone:</h2><pre>' + e.reason + '</pre></div>';
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

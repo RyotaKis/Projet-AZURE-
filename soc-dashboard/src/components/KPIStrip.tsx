@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Activity, ShieldAlert, Ban, Clock, Percent } from 'lucide-react';
 
@@ -6,7 +6,7 @@ interface KPIStripProps {
   stats: {
     tps: number;
     fraudRate: number;
-    ActivesAlerts: number;
+    activeAlerts: number;
     blocked: number;
     latency: number;
   };
@@ -16,8 +16,8 @@ export const KPIStrip: React.FC<KPIStripProps> = ({ stats }) => {
   const items = [
     { label: 'Trans/Min', value: stats.tps * 60, format: (v: number) => v.toLocaleString(), trend: '+2.4%' },
     { label: 'Taux Fraude', value: stats.fraudRate, format: (v: number) => `${v}%`, subtext: 'moy 24h' },
-    { label: 'Alertes Actives', value: stats.ActivesAlerts, format: (v: number) => v, isAlert: true },
-    { label: 'Bloqués 1H', value: stats.blocked, format: (v: number) => v.toLocaleString() },
+    { label: 'Alertes Actives', value: stats.activeAlerts, format: (v: number) => v, isAlert: true },
+    { label: 'BloquÃ©s 1H', value: stats.blocked, format: (v: number) => v.toLocaleString() },
     { label: 'Latence Nette', value: stats.latency, format: (v: number) => `${v}ms`, isSuccess: true },
   ];
 

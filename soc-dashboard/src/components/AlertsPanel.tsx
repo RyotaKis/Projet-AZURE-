@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Alert } from '../types';
+import type { Alert } from '../types';
 import { ShieldAlert, ExternalLink, AlertTriangle, AlertCircle } from 'lucide-react';
 
 interface AlertsPanelProps {
@@ -36,7 +36,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
             >
               <div className="flex justify-between items-start mb-1">
                 <div className="text-[10px] font-bold tracking-tight text-slate-800">
-                  {alert.type} <span className="text-slate-400">— {alert.user}</span>
+                  {alert.type} <span className="text-slate-400">â€” {alert.user}</span>
                 </div>
                 <div className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded ${
                   alert.severity === 'Critique' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
@@ -46,7 +46,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
               </div>
               
               <div className="text-[9px] text-slate-500 leading-relaxed mb-3">
-                Anomalie d�tect�e pour {alert.id}. 
+                Anomalie détectée pour {alert.id}. 
                 Intervention requise.
               </div>
 
@@ -71,7 +71,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
         {alerts.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-2 opacity-50 py-20">
             <ShieldCheck className="w-10 h-10" />
-            <p className="text-[9px] font-bold uppercase tracking-widest">�tat Nominal</p>
+            <p className="text-[9px] font-bold uppercase tracking-widest">État Nominal</p>
           </div>
         )}
       </div>

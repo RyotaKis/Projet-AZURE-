@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Transaction } from '../types';
+import type { Transaction } from '../types';
 import { Globe, User, Clock } from 'lucide-react';
 
 interface TransactionFeedProps {
@@ -15,7 +15,7 @@ export const TransactionFeed: React.FC<TransactionFeedProps> = ({ transactions }
           <Clock className="w-3 h-3" />
           Flux de Transactions Live
         </h3>
-        <span className="text-[9px] bg-slate-200 px-2 py-0.5 rounded uppercase font-bold text-slate-500">Donn�es Brutes</span>
+        <span className="text-[9px] bg-slate-200 px-2 py-0.5 rounded uppercase font-bold text-slate-500">Données Brutes</span>
       </div>
       
       <div className="flex-1 overflow-hidden relative terminal-overlay">

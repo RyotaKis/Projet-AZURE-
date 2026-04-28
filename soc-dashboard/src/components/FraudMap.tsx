@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   ComposableMap,
   Geographies,
@@ -22,7 +22,7 @@ const initialMarkers: MapMarker[] = [
   { id: '2', coordinates: [2.3522, 48.8566], severity: 'warning', city: 'Paris' },
   { id: '3', coordinates: [139.6503, 35.6762], severity: 'safe', city: 'Tokyo' },
   { id: '4', coordinates: [-0.1278, 51.5074], severity: 'safe', city: 'London' },
-  { id: '5', coordinates: [-46.6333, -23.5505], severity: 'Critique', city: 'São Paulo' },
+  { id: '5', coordinates: [-46.6333, -23.5505], severity: 'Critique', city: 'SÃ£o Paulo' },
   { id: '6', coordinates: [151.2093, -33.8688], severity: 'warning', city: 'Sydney' },
 ];
 
@@ -51,7 +51,7 @@ export const FraudMap: React.FC = () => {
       <div className="absolute top-4 left-4 z-10">
         <h3 className="text-[10px] font-bold text-white uppercase tracking-widest leading-none flex items-center gap-2">
           <MapIcon className="w-3 h-3 text-blue-500" />
-          Carte Globale des Fraudes <span className="font-normal text-slate-500">— �v�nements en direct</span>
+          Carte Globale des Fraudes <span className="font-normal text-slate-500">â€” Événements en direct</span>
         </h3>
       </div>
 
