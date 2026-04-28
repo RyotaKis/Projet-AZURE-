@@ -1,65 +1,88 @@
-﻿import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Alert } from '../types';
-import { ShieldAlert, ExternalLink, AlertTriangle, AlertCircle } from 'lucide-react';
+import { ShieldAlert, ExternalLink, AlertTriangle, AlertCircle, ShieldCheck, User } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface AlertsPanelProps {
   alerts: Alert[];
 }
 
 export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const activeAlerts = alerts.filter(a => !dismissed.has(a.id));
+
+  const handleAnalyze = (id: string) => {
+    toast.info(`Analyse approfondie de ${id}...`);
+    setTimeout(() => {
+      toast.success(`Menace ${id} neutralisée automatiquement.`);
+      setDismissed(prev => new Set(prev).add(id));
+    }, 1500);
+  };
+
+  const handleQueue = (id: string) => {
+    toast('Alerte mise en attente.');
+    setDismissed(prev => new Set(prev).add(id));
+  };
+
   return (
-    <div className="bg-white rounded border border-slate-200 overflow-hidden flex flex-col h-full shadow-sm">
-      <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-        <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+    <div className="bg-[var(--color-surface)] rounded border border-[var(--color-border-subtle)] overflow-hidden flex flex-col h-full shadow-sm">
+      <div className="p-4 border-b border-[var(--color-border-subtle)] flex items-center justify-between bg-[var(--color-bg-main)]">
+        <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
           <ShieldAlert className="w-4 h-4" />
           File d'Attente des Menaces
         </h3>
         <span className="text-[9px] font-bold text-rose-500 uppercase tracking-tighter">
-          {alerts.length} Actives
+          {activeAlerts.length} Actives
         </span>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence initial={false}>
-          {alerts.map((alert) => (
+          {activeAlerts.map((alert) => (
             <motion.div
               key={alert.id}
               layout
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               className={`border-l-2 pl-4 py-2 transition-all relative group ${
-                alert.severity === 'Critique' 
-                  ? 'border-rose-500 bg-rose-50/10' 
-                  : 'border-amber-500 bg-amber-50/10'
+                alert.severity === 'critical' 
+                  ? 'border-rose-500 bg-rose-900/10' 
+                  : 'border-amber-500 bg-amber-900/10'
               }`}
             >
               <div className="flex justify-between items-start mb-1">
-                <div className="text-[10px] font-bold tracking-tight text-slate-800">
-                  {alert.type} <span className="text-slate-400">â€” {alert.user}</span>
+                <div className="text-[10px] font-bold tracking-tight text-white">
+                  {alert.type} <span className="text-slate-500">— {alert.user}</span>
                 </div>
                 <div className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded ${
-                  alert.severity === 'Critique' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
+                  alert.severity === 'critical' ? 'bg-rose-900/50 text-rose-400' : 'bg-amber-900/50 text-amber-400'
                 }`}>
                   {alert.aiScore}%
                 </div>
               </div>
               
-              <div className="text-[9px] text-slate-500 leading-relaxed mb-3">
-                Anomalie détectée pour {alert.id}. 
-                Intervention requise.
+              <div className="text-[9px] text-slate-400 leading-relaxed mb-3">
+                Anomalie détectée pour {alert.id}. Intervention requise.
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="bg-[#0052FF] text-white text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:bg-blue-700 transition-colors">
+                <button 
+                  onClick={() => handleAnalyze(alert.id)}
+                  className="bg-[#0052FF] text-white text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:bg-blue-700 transition-colors"
+                >
                   Analyser
                 </button>
-                <button className="bg-slate-100 text-slate-600 text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:bg-slate-200 transition-colors">
+                <button 
+                  onClick={() => handleQueue(alert.id)}
+                  className="bg-[var(--color-bg-main)] text-slate-400 border border-[var(--color-border-subtle)] text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:text-white transition-colors"
+                >
                   Mettre en attente
                 </button>
               </div>
 
-              {alert.severity === 'Critique' && (
+              {alert.severity === 'critical' && (
                 <div className="absolute top-2 right-2">
                    <AlertCircle className="w-3 h-3 text-rose-500 animate-pulse" />
                 </div>
@@ -68,8 +91,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
           ))}
         </AnimatePresence>
         
-        {alerts.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-2 opacity-50 py-20">
+        {activeAlerts.length === 0 && (
+          <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-2 opacity-50 py-20">
             <ShieldCheck className="w-10 h-10" />
             <p className="text-[9px] font-bold uppercase tracking-widest">État Nominal</p>
           </div>
@@ -78,6 +101,3 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
     </div>
   );
 };
-
-// Internal icon helpers for AlertsPanel
-import { User, ShieldCheck } from 'lucide-react';

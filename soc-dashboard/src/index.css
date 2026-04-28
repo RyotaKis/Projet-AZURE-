@@ -5,12 +5,13 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Immersive UI Palette */
   --color-brand-blue: #0052FF;
-  --color-bg-main: #F3F4F6;
-  --color-sidebar-bg: #0F172A;
-  --color-surface: #FFFFFF;
-  --color-border-subtle: #E2E8F0;
+  --color-bg-main: #0a0f18;
+  --color-sidebar-bg: #05080f;
+  --color-surface: #111827;
+  --color-border-subtle: #1f2937;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
   
   --color-success: #10B981;
   --color-warning: #F59E0B;
@@ -20,7 +21,7 @@
 
 @layer base {
   body {
-    @apply bg-[var(--color-bg-main)] text-[#1E293B] font-sans antialiased;
+    @apply bg-[var(--color-bg-main)] text-[var(--color-text-main)] font-sans antialiased;
   }
 }
 
@@ -28,13 +29,11 @@
 .terminal-overlay::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: rgba(0, 82, 255, 0.03);
-  animation: scanline 6s linear infinite;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(rgba(10, 15, 24, 0) 50%, rgba(10, 15, 24, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 2px, 3px 100%;
   pointer-events: none;
+  z-index: 10;
 }
 
 @keyframes scanline {

@@ -1,52 +1,32 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
-import { KPIStrip } from './components/KPIStrip';
-import { TransactionFeed } from './components/TransactionFeed';
-import { AlertsPanel } from './components/AlertsPanel';
-import { AnalyticsGrid } from './components/AnalyticsGrid';
-import { FraudMap } from './components/FraudMap';
 import { useRealTimeData } from './hooks/useRealTimeData';
+import { DashboardView } from './pages/DashboardView';
 
 export default function App() {
-  const { transactions, alerts, stats } = useRealTimeData();
+  const data = useRealTimeData();
 
   return (
-    <div className="h-screen bg-[var(--color-bg-main)] flex flex-row overflow-hidden">
-      <Sidebar />
-      
-      <div className="flex-1 ml-16 flex flex-col min-w-0">
-        <Topbar stats={stats} />
+    <Router>
+      <Toaster theme="dark" position="top-right" />
+      <div className="h-screen bg-[var(--color-bg-main)] flex flex-row overflow-hidden text-[var(--color-text-main)]">
+        <Sidebar />
         
-        <main className="flex-1 mt-14 overflow-hidden flex flex-col">
-          {/* KPI STRIP - Global Header */}
-          <KPIStrip stats={stats} />
-
-          <div className="flex-1 flex overflow-hidden">
-            {/* Left Column: Transaction Feed (High Density) */}
-            <section className="w-[320px] bg-white border-r border-slate-200 flex flex-col flex-shrink-0 overflow-hidden">
-              <TransactionFeed transactions={transactions} />
-            </section>
-
-            {/* Main Area: Map & Charts */}
-            <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-              <div className="flex-1 flex gap-4 p-4 overflow-hidden">
-                <div className="flex-[1.5] h-full">
-                  <FraudMap />
-                </div>
-                <div className="flex-1 h-full min-w-[340px]">
-                  <AlertsPanel alerts={alerts} />
-                </div>
-              </div>
-
-              {/* Bottom Analytics */}
-              <div className="h-[300px] p-4 pt-0 overflow-hidden">
-                <AnalyticsGrid />
-              </div>
-            </div>
-          </div>
-        </main>
+        <div className="flex-1 ml-16 flex flex-col min-w-0">
+          <Topbar stats={data.stats} />
+          
+          <main className="flex-1 mt-14 overflow-hidden flex flex-col">
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardView data={data} />} />
+              <Route path="*" element={<div className="p-8 flex items-center justify-center h-full text-[var(--color-text-muted)]">Vue en cours de développement...</div>} />
+            </Routes>
+          </main>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
