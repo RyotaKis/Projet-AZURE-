@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 🗄️ Database pour les microservices (Transactions, Users, Alerts)
+  azur-db:
+    image: mariadb:10.6
+    container_name: azur-mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=azur_root_secret
+      - MYSQL_DATABASE=azur_cbs_ledger
+      - MYSQL_USER=azur_core
+      - MYSQL_PASSWORD=azur_core_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - azur_mariadb_data:/var/lib/mysql
+
+  # 🐇 Message Broker pour la communication asynchrone
+  azur-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: azur-rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    volumes:
+      - azur_rabbitmq_data:/var/lib/rabbitmq
+
+  # ⚡ Cache & Sessions
+  azur-redis:
+    image: redis:7
+    container_name: azur-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - azur_redis_data:/data
+
+volumes:
+  azur_mariadb_data:
+  azur_rabbitmq_data:
+  azur_redis_data:
