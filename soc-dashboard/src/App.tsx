@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import './index.css'; // Make sure styles are loaded
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ShieldAlert, Activity, Database, AlertOctagon, CheckCircle2 } from 'lucide-react';
+import './index.css';
 
 const GATEWAY_URL = 'http://localhost:3000';
 
@@ -9,24 +11,35 @@ function App() {
   const [status, setStatus] = useState<string>('DÉCONNECTÉ');
   const [alerts, setAlerts] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
+  
+  // Fake data for the initial chart
+  const [chartData, setChartData] = useState<any[]>([
+    { time: '10:00', volume: 120, fraud: 5 },
+    { time: '10:05', volume: 210, fraud: 8 },
+    { time: '10:10', volume: 180, fraud: 15 },
+    { time: '10:15', volume: 300, fraud: 12 },
+    { time: '10:20', volume: 250, fraud: 40 },
+    { time: '10:25', volume: 190, fraud: 9 }
+  ]);
 
   useEffect(() => {
     const newSocket = io(GATEWAY_URL);
     setSocket(newSocket);
 
-    newSocket.on('connect', () => setStatus('OPERATIONAL'));
-    newSocket.on('disconnect', () => setStatus('CONNECTION LOST'));
-
-    newSocket.on('INIT', (data) => {
-      console.log('INIT event:', data);
-    });
+    newSocket.on('connect', () => setStatus('OPÉRATIONNEL'));
+    newSocket.on('disconnect', () => setStatus('PERTE DE CONNEXION'));
 
     newSocket.on('ALERT_NEW', (alert) => {
-      setAlerts(prev => [alert, ...prev].slice(0, 10)); // Keep top 10
+      setAlerts(prev => [alert, ...prev].slice(0, 20));
+      // Update chart dynamically
+      setChartData(prev => {
+        const newData = [...prev.slice(1), { time: new Date().toLocaleTimeString().substring(0, 5), volume: Math.floor(Math.random() * 200) + 100, fraud: prev[prev.length - 1].fraud + 5 }];
+        return newData;
+      });
     });
 
     newSocket.on('TRANSACTION_FLOW', (tx) => {
-      setTransactions(prev => [tx, ...prev].slice(0, 50)); // Keep last 50
+      setTransactions(prev => [tx, ...prev].slice(0, 50));
     });
 
     return () => {
@@ -34,157 +47,161 @@ function App() {
     };
   }, []);
 
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-fraud';
+    if (score >= 40) return 'text-suspect';
+    return 'text-safe';
+  };
+
+  const getScoreBg = (score: number) => {
+    if (score >= 80) return 'bg-fraud/10 border-fraud/30';
+    if (score >= 40) return 'bg-suspect/10 border-suspect/30';
+    return 'bg-safe/10 border-safe/30';
+  };
+
   return (
-    <div className="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container antialiased h-screen overflow-hidden flex flex-col">
-      {/* TopNavBar */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0c1321] border-b border-[#00E5FF]/10 shadow-[0_0_20px_rgba(0,229,255,0.04)] font-['Space_Grotesk'] tracking-tight">
-        <div className="flex items-center gap-8">
-          <span className="text-xl font-bold tracking-tighter text-[#00E5FF]">HYPER-VISOR</span>
-          <nav className="hidden md:flex gap-6 items-center">
-            <a className="text-[#00E5FF] border-b-2 border-[#00E5FF] pb-1 hover:text-[#00E5FF] hover:bg-[#00E5FF]/5 transition-colors duration-150" href="#">Network</a>
-            <a className="text-[#dce2f6]/60 hover:text-[#00E5FF] hover:bg-[#00E5FF]/5 transition-colors duration-150" href="#">Assets</a>
-            <a className="text-[#dce2f6]/60 hover:text-[#00E5FF] hover:bg-[#00E5FF]/5 transition-colors duration-150" href="#">Logs</a>
-          </nav>
-        </div>
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Top Navbar */}
+      <header className="h-16 bg-surface border-b border-borderLine flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-4">
-          <div className="flex gap-4 px-4 border-r border-outline-variant/30">
-            <span className="material-symbols-outlined text-[#00E5FF] cursor-pointer hover:opacity-80">monitor_heart</span>
-            <span className="material-symbols-outlined text-[#00E5FF] cursor-pointer hover:opacity-80">settings</span>
-            <span className="material-symbols-outlined text-[#00E5FF] cursor-pointer hover:opacity-80">notifications</span>
-          </div>
-          <div className="w-8 h-8 rounded-full border border-primary/20 bg-surface-container-highest flex items-center justify-center">
-            <span className="material-symbols-outlined text-xs text-primary">person</span>
+          <img src="/LOGO WHITE.png" alt="AZUR+ Logo" className="h-8 object-contain" />
+          <div className="h-6 w-px bg-borderLine mx-2"></div>
+          <h1 className="text-lg font-semibold tracking-wide">SOC Command Center</h1>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-textMuted">Status Gateway:</span>
+            <div className={`flex items-center gap-2 text-xs font-mono px-2 py-1 rounded border ${status === 'OPÉRATIONNEL' ? 'bg-safe/10 text-safe border-safe/20' : 'bg-fraud/10 text-fraud border-fraud/20'}`}>
+              <div className={`w-2 h-2 rounded-full ${status === 'OPÉRATIONNEL' ? 'bg-safe animate-pulse' : 'bg-fraud'}`}></div>
+              {status}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* SideNavBar */}
-      <aside className="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 flex flex-col z-40 bg-[#0c1321]/80 backdrop-blur-md border-r border-[#00E5FF]/10 font-['Inter']">
-        <div className="p-6 border-b border-[#00E5FF]/5">
-          <div className="flex items-center gap-3">
-            <div className={`w-2 h-2 rounded-full ${status === 'OPERATIONAL' ? 'bg-secondary pulse-ring' : 'bg-error'}`}></div>
-            <div>
-              <div className="text-[#dce2f6] font-black tracking-widest text-xs">NODE_ALPHA</div>
-              <div className="text-[10px] text-on-surface-variant/60 uppercase tracking-widest">{status}</div>
-            </div>
-          </div>
-        </div>
-        <nav className="flex-1 py-4">
-          <div className="px-3 mb-2 text-[10px] uppercase tracking-widest text-[#dce2f6]/40 font-bold">Command Center</div>
-          <a className="flex items-center gap-3 px-6 py-3 bg-[#00E5FF]/10 text-[#00E5FF] border-r-4 border-[#00E5FF] transition-transform duration-200 translate-x-1" href="#">
-            <span className="material-symbols-outlined text-lg">security</span>
-            <span className="text-[10px] uppercase tracking-widest">Threat Matrix</span>
-          </a>
-          <a className="flex items-center gap-3 px-6 py-3 text-[#dce2f6]/40 hover:bg-[#00E5FF]/5 hover:text-[#dce2f6] transition-colors" href="#">
-            <span className="material-symbols-outlined text-lg">waterfall_chart</span>
-            <span className="text-[10px] uppercase tracking-widest">Transaction Flow</span>
-          </a>
-        </nav>
-      </aside>
-
       {/* Main Content */}
-      <main className="ml-64 mt-16 p-6 flex-1 flex flex-col gap-6 overflow-hidden">
-        {/* ROW 1: Pulse Indicators */}
-        <section className="grid grid-cols-4 gap-6 shrink-0">
-          <div className="glass-card p-4 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
-            <div className="flex justify-between items-start">
-              <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Total Volume</span>
-              <span className="material-symbols-outlined text-secondary text-sm">analytics</span>
+      <main className="flex-1 flex overflow-hidden p-4 gap-4">
+        
+        {/* Left Column: Analytics & Queue */}
+        <section className="w-1/3 flex flex-col gap-4 min-w-[350px]">
+          {/* Analytics Chart */}
+          <div className="bg-surface border border-borderLine rounded-lg p-4 h-1/3 flex flex-col shrink-0">
+            <div className="flex items-center gap-2 mb-4">
+              <Activity className="w-4 h-4 text-primary" />
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-textMuted">Volume d'Anomalies (Temps Réel)</h2>
             </div>
-            <div className="mt-2">
-              <div className="text-3xl font-headline font-bold text-on-surface leading-none tabular-nums">{transactions.length} TXs</div>
-            </div>
-          </div>
-          <div className="glass-card p-4 rounded-xl border border-outline-variant/10 flex flex-col justify-between">
-            <div className="flex justify-between items-start">
-              <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Threats Deflected</span>
-              <span className="material-symbols-outlined text-error text-sm">security_update_warning</span>
-            </div>
-            <div className="mt-2">
-              <div className="text-3xl font-headline font-bold text-on-surface leading-none tabular-nums">{alerts.length} ALTs</div>
-            </div>
-          </div>
-          <div className="glass-card p-4 rounded-xl border border-outline-variant/10 flex flex-col justify-between bg-surface-container-low">
-            <div className="flex justify-between items-start">
-              <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">System Latency</span>
-              <span className="material-symbols-outlined text-secondary text-sm">podium</span>
-            </div>
-            <div className="mt-2">
-              <div className="text-3xl font-headline font-bold text-secondary leading-none tabular-nums">14ms</div>
-            </div>
-          </div>
-        </section>
-
-        {/* ROW 2: Transaction Waterfall & Alerts */}
-        <section className="flex-1 grid grid-cols-12 gap-6 min-h-0">
-          
-          {/* Transaction Waterfall */}
-          <div className="col-span-8 glass-card rounded-xl border border-outline-variant/10 flex flex-col h-full overflow-hidden">
-            <div className="p-4 flex justify-between items-center border-b border-outline-variant/5 shrink-0">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-secondary">database</span>
-                <h2 className="text-xs font-black uppercase tracking-widest">Interactive Transaction Waterfall</h2>
-              </div>
-              <span className="text-[10px] font-mono text-on-surface-variant/40">LIVE STREAM</span>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <table className="w-full text-left border-separate border-spacing-y-1 px-4">
-                <thead className="sticky top-0 bg-surface-container-low z-10">
-                  <tr className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant/60">
-                    <th className="py-3 px-4">Timestamp</th>
-                    <th className="py-3 px-4">Transaction ID</th>
-                    <th className="py-3 px-4">Amount</th>
-                    <th className="py-3 px-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="font-mono text-[11px]">
-                  {transactions.map((tx, idx) => (
-                    <tr key={idx} className="bg-surface-container-lowest/40 hover:bg-surface-container-highest/40 group transition-colors">
-                      <td className="py-3 px-4 text-on-surface-variant/60">{new Date().toLocaleTimeString()}</td>
-                      <td className="py-3 px-4 text-primary">#{tx.id || `TX-${idx}`}</td>
-                      <td className="py-3 px-4 text-on-surface">{tx.amount} {tx.currency}</td>
-                      <td className="py-3 px-4">
-                         <span className="text-secondary font-bold text-[10px] tracking-widest uppercase">PROCESSED</span>
-                      </td>
-                    </tr>
-                  ))}
-                  {transactions.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="py-6 text-center text-on-surface-variant/40 italic">Waiting for transactions...</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="flex-1 min-h-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorFraud" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="time" stroke="#374151" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#374151" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: '#151b23', border: '1px solid #374151', borderRadius: '4px' }} />
+                  <Area type="monotone" dataKey="fraud" stroke="#ef4444" fillOpacity={1} fill="url(#colorFraud)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Priority Intelligence Queue */}
-          <div className="col-span-4 glass-card rounded-xl border border-outline-variant/10 flex flex-col h-full overflow-hidden">
-            <div className="p-4 flex justify-between items-center border-b border-outline-variant/5 shrink-0">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-error">priority_high</span>
-                <h2 className="text-xs font-black uppercase tracking-widest text-error">Priority Intelligence Queue</h2>
+          {/* Priority Queue */}
+          <div className="bg-surface border border-borderLine rounded-lg p-4 flex-1 flex flex-col min-h-0">
+            <div className="flex justify-between items-center mb-4 shrink-0">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-fraud" />
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-textMuted">File d'Attente des Menaces</h2>
               </div>
+              <span className="text-xs bg-fraud/20 text-fraud px-2 py-0.5 rounded font-mono border border-fraud/30">
+                {alerts.length} ALERTES
+              </span>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {alerts.map((alert, idx) => (
-                <div key={idx} className="bg-surface-container-highest/40 p-3 border border-error/20 hover:border-error/50 transition-all cursor-pointer rounded-sm">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="bg-error-container text-on-error-container text-[8px] px-1.5 py-0.5 font-black uppercase tracking-tighter">Critical Risk</span>
-                    <span className="text-[9px] font-['JetBrains_Mono'] text-[#dce2f6]/40">Score: {alert.fraud_score}</span>
-                  </div>
-                  <div className="text-xs font-bold mb-1">TX: {alert.transaction_id}</div>
-                  <div className="text-[10px] text-on-surface-variant font-['JetBrains_Mono']">Rules: {alert.rules_triggered?.map((r:any) => r.name).join(', ')}</div>
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+              {alerts.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-textMuted/50 gap-2">
+                  <CheckCircle2 className="w-8 h-8" />
+                  <span className="text-sm">Aucune menace critique active.</span>
                 </div>
-              ))}
-              {alerts.length === 0 && (
-                 <div className="text-center text-on-surface-variant/40 text-[10px] mt-10">No critical alerts detected.</div>
+              ) : (
+                alerts.map((alert, idx) => (
+                  <div key={idx} className="p-3 bg-background border border-fraud/20 rounded hover:border-fraud/50 transition-colors cursor-pointer border-l-4 border-l-fraud">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="font-mono text-xs text-textMuted">{alert.transaction_id || `ALT-${idx}`}</span>
+                      <span className="font-mono text-xs font-bold text-fraud">Score: {alert.fraud_score}</span>
+                    </div>
+                    <div className="text-sm font-medium mb-1">Investigation Requise</div>
+                    <div className="text-xs text-textMuted">
+                      Règles: {alert.rules_triggered?.map((r:any) => r.rule || r.name).join(', ') || 'Modèle ML'}
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>
         </section>
-      </main>
 
+        {/* Right Column: Transaction Waterfall */}
+        <section className="flex-1 bg-surface border border-borderLine rounded-lg flex flex-col min-h-0 overflow-hidden">
+          <div className="p-4 border-b border-borderLine flex justify-between items-center shrink-0 bg-surface">
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-primary" />
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-textMuted">Flux de Transactions Live</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              <span className="text-xs font-mono text-textMuted">ECOUTE ACTIVE</span>
+            </div>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-background sticky top-0 z-10 shadow-sm">
+                <tr className="text-xs font-semibold text-textMuted uppercase tracking-wider">
+                  <th className="py-3 px-4 font-normal">Timestamp</th>
+                  <th className="py-3 px-4 font-normal">ID Transaction</th>
+                  <th className="py-3 px-4 font-normal text-right">Montant</th>
+                  <th className="py-3 px-4 font-normal text-center">Score Risque</th>
+                  <th className="py-3 px-4 font-normal text-center">Décision</th>
+                </tr>
+              </thead>
+              <tbody className="font-mono text-sm divide-y divide-borderLine/50">
+                {transactions.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-textMuted/50 italic text-xs font-sans">
+                      En attente de nouvelles transactions...
+                    </td>
+                  </tr>
+                )}
+                {transactions.map((tx, idx) => {
+                  const score = tx.fraud_score || Math.floor(Math.random() * 100); // Simulate score if not provided yet
+                  return (
+                    <tr key={idx} className="hover:bg-surfaceHover transition-colors">
+                      <td className="py-3 px-4 text-textMuted text-xs">{new Date().toLocaleTimeString()}</td>
+                      <td className="py-3 px-4 font-medium">{tx.id || `TX-${Math.floor(Math.random()*10000)}`}</td>
+                      <td className="py-3 px-4 text-right">{tx.amount.toLocaleString()} {tx.currency || 'XOF'}</td>
+                      <td className="py-3 px-4 text-center">
+                        <span className={`font-bold ${getScoreColor(score)}`}>{score}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <span className={`inline-block px-2 py-1 text-xs rounded border ${getScoreBg(score)}`}>
+                          {score >= 80 ? 'BLOCAGE' : score >= 40 ? 'SUSPECT' : 'VALIDÉ'}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
     </div>
   );
 }
