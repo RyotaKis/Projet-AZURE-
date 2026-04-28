@@ -8,7 +8,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('AZURE+ API Gateway')
-    .setDescription('Le point d\\'entrée unique pour le système de détection de fraude AZURE+')
+    .setDescription("Le point d'entrée unique pour le système de détection de fraude AZURE+")
     .setVersion('1.0')
     .addBearerAuth()
     .build();

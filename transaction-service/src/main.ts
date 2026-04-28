@@ -8,7 +8,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('AZURE+ Transaction Service (Core Ledger)')
-    .setDescription('Microservice de gestion des comptes et de l\\'historique des transactions')
+    .setDescription("Microservice de gestion des comptes et de l'historique des transactions")
     .setVersion('1.0')
     .build();
   

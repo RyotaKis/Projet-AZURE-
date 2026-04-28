@@ -14,7 +14,7 @@ export class AppController {
   ) {}
 
   @Get('health')
-  @ApiOperation({ summary: 'Vérifie l\\'état de la Gateway' })
+  @ApiOperation({ summary: "Vérifie l'état de la Gateway" })
   getHealth(): { status: string } {
     return { status: 'AZURE+ API Gateway Online' };
   }
