@@ -66,7 +66,7 @@ function App() {
         <div className="flex items-center gap-4">
           <img src="/LOGO WHITE.png" alt="AZUR+ Logo" className="h-8 object-contain" />
           <div className="h-6 w-px bg-borderLine mx-2"></div>
-          <h1 className="text-lg font-semibold tracking-wide">SOC Command Center</h1>
+          <h1 className="text-lg font-semibold tracking-wide">AZUR+</h1>
         </div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
