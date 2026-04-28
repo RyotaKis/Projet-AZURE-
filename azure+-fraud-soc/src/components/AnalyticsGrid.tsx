@@ -1,0 +1,151 @@
+import React from 'react';
+import { 
+  LineChart, Line, AreaChart, Area, 
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar,
+  Cell,
+  PieChart, Pie
+} from 'recharts';
+
+// Mock data for analytics
+const timeData = Array.from({ length: 24 }, (_, i) => ({
+  time: `${i}:00`,
+  fraud: Math.floor(Math.random() * 20 + 5),
+  volume: Math.floor(Math.random() * 500 + 1000)
+}));
+
+const scoreDistribution = [
+  { score: '0-20', count: 450, color: '#30D158' },
+  { score: '21-40', count: 320, color: '#4CAF50' },
+  { score: '41-60', count: 210, color: '#FFEB3B' },
+  { score: '61-80', count: 85, color: '#FF9F0A' },
+  { score: '81-100', count: 42, color: '#FF3B30' },
+];
+
+const hourlyActivity = Array.from({ length: 7 }, (_, day) => 
+  Array.from({ length: 12 }, (_, hour) => ({
+    day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day],
+    hour: `${hour * 2}h`,
+    value: Math.floor(Math.random() * 100)
+  }))
+).flat();
+
+export const AnalyticsGrid: React.FC = () => {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Fraud Over Time */}
+      <div className="bg-white p-6 rounded-xl border border-[var(--color-border-light)] shadow-sm h-[320px] flex flex-col">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500">Fraud Events Trend</h4>
+          <div className="flex items-center gap-4 text-[10px] font-bold">
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500" /> FRAUD</div>
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" /> VOLUME</div>
+          </div>
+        </div>
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={timeData}>
+              <defs>
+                <linearGradient id="colorFraud" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#FF3B30" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="#FF3B30" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} hide />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
+              <Tooltip 
+                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '11px', fontWeight: 'bold' }}
+              />
+              <Area type="monotone" dataKey="fraud" stroke="#FF3B30" strokeWidth={2} fillOpacity={1} fill="url(#colorFraud)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Transaction Volume */}
+      <div className="bg-white p-6 rounded-xl border border-[var(--color-border-light)] shadow-sm h-[320px] flex flex-col">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500">Hourly Volume (24h)</h4>
+          <select className="text-[10px] bg-slate-100 border-none rounded px-2 py-1 outline-none font-bold">
+            <option>LAST 24 HOURS</option>
+            <option>LAST 7 DAYS</option>
+          </select>
+        </div>
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={timeData}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
+              <Tooltip 
+                cursor={{fill: '#f8fafc'}}
+                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '11px', fontWeight: 'bold' }}
+              />
+              <Bar dataKey="volume" fill="#0A84FF" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Score Distribution */}
+      <div className="bg-white p-6 rounded-xl border border-[var(--color-border-light)] shadow-sm h-[320px] flex flex-col">
+        <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">AI Risk Score Distribution</h4>
+        <div className="flex-1 flex gap-4">
+          <div className="flex-1">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={scoreDistribution} layout="vertical" margin={{ left: 20 }}>
+                <XAxis type="number" hide />
+                <YAxis dataKey="score" type="category" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />
+                <Tooltip />
+                <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                  {scoreDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} fillOpacity={0.8} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="w-24 flex flex-col justify-center space-y-3">
+            {scoreDistribution.map((item) => (
+              <div key={item.score} className="flex flex-col">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">{item.score}</span>
+                <span className="text-xs font-mono font-bold" style={{ color: item.color }}>{item.count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Hourly Activity Heatmap Mockup with Bar Distribution */}
+      <div className="bg-white p-6 rounded-xl border border-[var(--color-border-light)] shadow-sm h-[320px] flex flex-col">
+        <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">Global Activity Heatmap</h4>
+        <div className="flex-1 grid grid-cols-7 gap-1 h-full">
+          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => (
+            <div key={dIdx} className="flex flex-col gap-1 h-full">
+              <span className="text-[9px] font-bold text-center text-slate-300 py-1">{day}</span>
+              {Array.from({ length: 12 }).map((_, hIdx) => {
+                const opacity = Math.random() * 0.9 + 0.1;
+                return (
+                  <div 
+                    key={hIdx}
+                    className="flex-1 rounded-sm bg-blue-600"
+                    style={{ opacity }}
+                    title={`Activity: ${Math.round(opacity * 100)}%`}
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 flex items-center gap-3 text-[9px] font-bold text-slate-400 justify-end">
+          <span>LOW ACTIVITY</span>
+          <div className="flex gap-0.5">
+            {[0.1, 0.3, 0.5, 0.7, 0.9].map(o => <div key={o} className="w-3 h-3 bg-blue-600 rounded-sm" style={{ opacity: o }} />)}
+          </div>
+          <span>PEAK</span>
+        </div>
+      </div>
+    </div>
+  );
+};

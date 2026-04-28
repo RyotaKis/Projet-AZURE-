@@ -6,10 +6,10 @@ import { TransactionFeed } from './components/TransactionFeed';
 import { AlertsPanel } from './components/AlertsPanel';
 import { AnalyticsGrid } from './components/AnalyticsGrid';
 import { FraudMap } from './components/FraudMap';
-import { useRealTimeData } from './hooks/useRealTimeData';
+import { useSimulation } from './hooks/useSimulation';
 
 export default function App() {
-  const { transactions, alerts, stats } = useRealTimeData();
+  const { transactions, alerts, stats } = useSimulation();
 
   return (
     <div className="h-screen bg-[var(--color-bg-main)] flex flex-row overflow-hidden">
