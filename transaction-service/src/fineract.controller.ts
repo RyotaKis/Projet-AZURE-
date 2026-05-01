@@ -29,8 +29,9 @@ export class FineractWebhookController {
         hour_of_day: payload.hour_of_day || new Date().getHours()
       };
 
-      // Appel natif vers Fraud Engine (Port 8000)
-      fetch('http://localhost:8000/predict', {
+      const fraudEngineUrl = process.env.FRAUD_ENGINE_URL || 'http://localhost:8000';
+      // Appel natif vers Fraud Engine
+      fetch(`${fraudEngineUrl}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(enginePayload)
@@ -48,8 +49,9 @@ export class FineractWebhookController {
 
          this.logger.log(`Fraud Score computed: ${computedScore} (Original: ${JSON.stringify(data)})`);
          
-         // Broadcast à l'API Gateway (Port 3000)
-         fetch('http://localhost:3000/gateway/intercept', {
+         const gatewayUrl = process.env.GATEWAY_URL || 'http://localhost:3000';
+         // Broadcast à l'API Gateway
+         fetch(`${gatewayUrl}/gateway/intercept`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...payload, fraud_score: computedScore, rules_triggered: rules })
