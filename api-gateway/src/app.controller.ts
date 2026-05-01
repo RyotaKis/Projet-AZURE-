@@ -20,32 +20,27 @@ export class AppController {
   }
 
   @Post('gateway/intercept')
-  @ApiOperation({ summary: 'Intercepte et orchestre une nouvelle transaction entrante' })
+  @ApiOperation({ summary: 'Reçoit une transaction évaluée par le Transaction Service' })
   async interceptTransaction(@Body() rawTx: any) {
-    this.logger.log(`Intercepting transaction: ${rawTx.amount} ${rawTx.currency || 'XOF'}`);
+    this.logger.log(`Received evaluated transaction: ${rawTx.amount} ${rawTx.currency || 'XOF'} (Score: ${rawTx.fraud_score})`);
     
-    // Diffusion temps réel de la transaction (SOC Dashboard)
+    // Diffusion de la transaction au SOC Dashboard
     this.eventsGateway.broadcastTransaction(rawTx);
 
-    // Simulation de l'orchestration vers le Fraud Engine et le Ledger
-    // (Dans la version complète, ici on ferait des appels HTTP/RabbitMQ vers le port 8000 et 4000)
-    
-    const isMockFraud = rawTx.amount > 100000; // Logique bouchonnée simple pour le test du simulateur
-    if (isMockFraud) {
-       this.logger.warn(`Fraude détectée sur la transaction ! Diffusion de l'alerte.`);
+    // Si le score dépasse 40, on diffuse une alerte critique
+    if (rawTx.fraud_score >= 40) {
+       this.logger.warn(`Alerte transmise au SOC ! Score: ${rawTx.fraud_score}`);
        this.eventsGateway.broadcastAlert({
          alert_id: `ALT_${Date.now()}`,
-         transaction_id: rawTx.id || `TX_${Date.now()}`,
-         severity: 'critical',
-         fraud_score: 85,
-         rules_triggered: [{ rule: 'R01', name: 'Montant Anormal' }]
+         transaction_id: rawTx.id || rawTx.resourceId || `TX_${Date.now()}`,
+         severity: rawTx.fraud_score >= 80 ? 'critical' : 'warning',
+         fraud_score: rawTx.fraud_score,
+         user: rawTx.user_id || rawTx.user || "Inconnu",
+         amount: rawTx.amount || 0,
+         rules_triggered: rawTx.rules_triggered || []
        });
     }
 
-    return { 
-      success: true, 
-      action_taken: isMockFraud ? 'BLOCKED' : 'APPROVED', 
-      transaction: rawTx 
-    };
+    return { success: true, broadcasted: true };
   }
 }

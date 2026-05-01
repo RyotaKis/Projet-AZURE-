@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure+ Frame Studio</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --panel-border: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--panel-border);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header h1::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            flex: 1;
+            height: calc(100vh - 73px);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .file-upload {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .file-upload-text strong {
+            color: var(--primary);
+        }
+
+        .range-slider {
+            width: 100%;
+            appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            transition: transform 0.1s;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview-area {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-hints {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .kbd {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: monospace;
+        }
+
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Checkerboard pattern to show transparency clearly */
+        .canvas-wrapper {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background:
+                linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
+                linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
+                linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #333;
+            border-radius: 4px;
+        }
+
+        canvas {
+            display: block;
+            max-width: 100%;
+            max-height: calc(100vh - 180px);
+            object-fit: contain;
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>Azure+ Frame Studio</h1>
+        <div style="font-size: 0.875rem; color: var(--text-muted);">Générateur d'images simple et propre</div>
+    </header>
+
+    <main class="main-container">
+        <aside class="sidebar">
+            <div class="card">
+                <div class="card-title">1. Importer</div>
+
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>Image de fond (Frame)</span>
+                        <span id="frameStatus" style="color: var(--text-muted);">Aucune</span>
+                    </div>
+                    <div class="file-upload">
+                        <input type="file" id="frameInput" accept="image/png, image/jpeg, image/webp">
+                        <div class="file-upload-text">
+                            <strong>Cliquez</strong> ou glissez le Frame ici (PNG)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>Votre Photo</span>
+                        <span id="photoStatus" style="color: var(--text-muted);">Aucune</span>
+                    </div>
+                    <div class="file-upload">
+                        <input type="file" id="photoInput" accept="image/*" multiple>
+                        <div class="file-upload-text">
+                            <strong>Cliquez</strong> ou glissez la(les) Photo(s) ici
+                        </div>
+                    </div>
+                    <div id="queueStatus" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; text-align: right;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">2. Ajustements</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    La photo sera placée <strong>derrière</strong> le frame. Utilisez la souris sur l'image pour la
+                    déplacer.
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">
+                        <span>Zoom de la photo</span>
+                        <span id="zoomValue">1.0x</span>
+                    </div>
+                    <input type="range" id="zoomSlider" class="range-slider" min="0.1" max="5" step="0.05" value="1"
+                        disabled>
+                </div>
+
+                <div class="input-group" style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                    <button id="resetPosBtn" class="btn btn-secondary" disabled>Recentrer photo</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">3. Exporter</div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="downloadBtn" class="btn btn-primary" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Télécharger
+                    </button>
+                    <button id="skipBtn" class="btn btn-secondary" style="flex: 0 0 auto; width: auto;" disabled title="Passer à la photo suivante">
+                        Passer
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="preview-area">
+            <div class="preview-header">
+                <div class="card-title" style="margin: 0;">Aperçu en temps réel</div>
+                <div class="preview-hints">
+                    <span><span class="kbd">Clic + Glisser</span> Déplacer</span>
+                    <span><span class="kbd">Molette</span> Zoomer</span>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <canvas id="editorCanvas"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const frameInput = document.getElementById('frameInput');
+        const photoInput = document.getElementById('photoInput');
+        const zoomSlider = document.getElementById('zoomSlider');
+        const resetPosBtn = document.getElementById('resetPosBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const canvas = document.getElementById('editorCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const frameStatus = document.getElementById('frameStatus');
+        const photoStatus = document.getElementById('photoStatus');
+        const queueStatus = document.getElementById('queueStatus');
+        const zoomValue = document.getElementById('zoomValue');
+        const skipBtn = document.getElementById('skipBtn');
+
+        let frameImg = null;
+        let photoImg = null;
+
+        let photoQueue = [];
+        let currentPhotoIndex = 0;
+
+        // Position represente le centre de la photo sur le canvas
+        let photoPos = { x: 0, y: 0 };
+        let photoZoom = 1;
+
+        let isDragging = false;
+        let lastMousePos = { x: 0, y: 0 };
+
+        // Helper: load image
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const url = URL.createObjectURL(file);
+                const img = new Image();
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    resolve(img);
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        // Helper: center photo
+        function centerPhoto() {
+            if (photoImg && frameImg) {
+                photoPos.x = canvas.width / 2;
+                photoPos.y = canvas.height / 2;
+
+                // Auto scale to fill the canvas width or height roughly
+                const scaleX = canvas.width / photoImg.width;
+                const scaleY = canvas.height / photoImg.height;
+                photoZoom = Math.max(scaleX, scaleY); // fill
+
+                // update slider safely
+                if (photoZoom < parseFloat(zoomSlider.min)) zoomSlider.min = (photoZoom * 0.5).toFixed(2);
+                if (photoZoom > parseFloat(zoomSlider.max)) zoomSlider.max = (photoZoom * 2).toFixed(2);
+
+                zoomSlider.value = photoZoom;
+                zoomValue.textContent = photoZoom.toFixed(2) + 'x';
+            }
+        }
+
+        // Render Loop
+        function render() {
+            // S'il n'y a ni frame ni photo, on vide
+            if (!frameImg && !photoImg) {
+                canvas.width = 800;
+                canvas.height = 800;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            // On base la taille du canvas final sur le frame
+            // S'il n'y a pas de frame, on base sur la photo
+            const targetWidth = frameImg ? frameImg.width : photoImg.width;
+            const targetHeight = frameImg ? frameImg.height : photoImg.height;
+
+            if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                if (!frameImg && photoImg) {
+                    centerPhoto();
+                }
+            }
+
+            // Nettoyage - Transparent
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Dessiner la photo (au fond)
+            if (photoImg) {
+                ctx.save();
+                const w = photoImg.width * photoZoom;
+                const h = photoImg.height * photoZoom;
+
+                ctx.translate(photoPos.x, photoPos.y);
+                ctx.drawImage(photoImg, -w / 2, -h / 2, w, h);
+                ctx.restore();
+            }
+
+            // 2. Dessiner le frame (par-dessus, le trou transparent laissera voir la photo)
+            if (frameImg) {
+                ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Upload Frame
+        frameInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            frameStatus.textContent = 'Chargé';
+            frameStatus.style.color = 'var(--success)';
+            frameImg = await loadImage(file);
+
+            if (photoImg && photoPos.x === 0 && photoPos.y === 0) {
+                centerPhoto();
+            }
+
+            checkEnableControls();
+            render();
+        });
+
+        // Upload Photo
+        photoInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            photoQueue = photoQueue.concat(files);
+            
+            if (!photoImg) {
+                await loadCurrentPhotoInQueue();
+            } else {
+                updateQueueStatus();
+            }
+        });
+
+        async function loadCurrentPhotoInQueue() {
+            if (currentPhotoIndex >= photoQueue.length) {
+                photoStatus.textContent = 'Terminé';
+                photoStatus.style.color = 'var(--text-muted)';
+                photoImg = null;
+                updateQueueStatus();
+                checkEnableControls();
+                render();
+                return;
+            }
+
+            const file = photoQueue[currentPhotoIndex];
+            photoStatus.textContent = 'Chargée';
+            photoStatus.style.color = 'var(--success)';
+            
+            photoImg = await loadImage(file);
+            centerPhoto();
+            checkEnableControls();
+            updateQueueStatus();
+            render();
+        }
+
+        function updateQueueStatus() {
+            if (photoQueue.length > 0) {
+                if (currentPhotoIndex >= photoQueue.length) {
+                    queueStatus.innerHTML = `File d'attente : <strong>Terminée</strong>`;
+                } else {
+                    queueStatus.innerHTML = `File d'attente : <strong>${currentPhotoIndex + 1} / ${photoQueue.length}</strong>`;
+                }
+            } else {
+                queueStatus.innerHTML = '';
+            }
+        }
+
+        function checkEnableControls() {
+            const hasPhoto = photoImg !== null;
+            zoomSlider.disabled = !hasPhoto;
+            resetPosBtn.disabled = !hasPhoto;
+            // On peut télécharger si on a au moins une image (frame ou photo)
+            downloadBtn.disabled = (!frameImg && !photoImg);
+            skipBtn.disabled = photoQueue.length === 0 || currentPhotoIndex >= photoQueue.length;
+        }
+
+        // Zoom Slider
+        zoomSlider.addEventListener('input', (e) => {
+            photoZoom = parseFloat(e.target.value);
+            zoomValue.textContent = photoZoom.toFixed(2) + 'x';
+            render();
+        });
+
+        // Reset Pos
+        resetPosBtn.addEventListener('click', () => {
+            centerPhoto();
+            render();
+        });
+
+        // Mouse Drag to Pan Photo
+        canvas.addEventListener('mousedown', (e) => {
+            if (!photoImg) return;
+            isDragging = true;
+            lastMousePos = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging || !photoImg) return;
+
+            const dx = e.clientX - lastMousePos.x;
+            const dy = e.clientY - lastMousePos.y;
+            lastMousePos = { x: e.clientX, y: e.clientY };
+
+            // Convertir la distance d'écran en pixels canvas
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            photoPos.x += dx * scaleX;
+            photoPos.y += dy * scaleY;
+
+            render();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Mouse Wheel to Zoom
+        canvas.addEventListener('wheel', (e) => {
+            if (!photoImg) return;
+            e.preventDefault();
+
+            const zoomDelta = e.deltaY > 0 ? 0.95 : 1.05;
+            photoZoom *= zoomDelta;
+
+            // Limit bounds safely
+            photoZoom = Math.max(0.01, Math.min(10, photoZoom));
+
+            zoomSlider.value = photoZoom;
+            zoomValue.textContent = photoZoom.toFixed(2) + 'x';
+            render();
+        }, { passive: false });
+
+        // Download
+        downloadBtn.addEventListener('click', async () => {
+            if (!frameImg && !photoImg) return;
+
+            const link = document.createElement('a');
+            link.download = photoQueue.length > 1 ? `azure-frame-${currentPhotoIndex + 1}.png` : 'azure-frame.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            advanceQueue();
+        });
+
+        skipBtn.addEventListener('click', () => {
+            advanceQueue();
+        });
+
+        async function advanceQueue() {
+            if (photoQueue.length > 0 && currentPhotoIndex < photoQueue.length) {
+                currentPhotoIndex++;
+                await loadCurrentPhotoInQueue();
+            }
+        }
+
+        // Init
+        render();
+
+    </script>
+</body>
+
+</html>

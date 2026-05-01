@@ -28,7 +28,7 @@ export function useRealTimeData() {
       const formattedTx: Transaction = {
         id: tx.id || Math.random().toString(36).substr(2, 9).toUpperCase(),
         timestamp: new Date(),
-        user: tx.user || 'Unknown',
+        user: tx.user || tx.user_id || 'Unknown',
         country: 'FRA', // mock if not provided
         amount: tx.amount,
         currency: tx.currency || 'XOF',
@@ -43,9 +43,9 @@ export function useRealTimeData() {
     newSocket.on('ALERT_NEW', (alertData) => {
       const formattedAlert: Alert = {
         id: `ALRT-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
-        user: 'Unknown',
+        user: alertData.user || 'Unknown',
         type: alertData.rules_triggered?.[0]?.name || 'Anomalie Détectée',
-        amount: 0,
+        amount: alertData.amount || 0,
         aiScore: alertData.fraud_score,
         severity: alertData.fraud_score >= 80 ? 'critical' : 'warning',
         timestamp: new Date()
