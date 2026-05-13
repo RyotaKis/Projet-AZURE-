@@ -6,23 +6,28 @@ import { toast } from 'sonner';
 
 interface AlertsPanelProps {
   alerts: Alert[];
+  setAlerts?: React.Dispatch<React.SetStateAction<Alert[]>>;
+  socket?: any;
 }
 
-export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-  const activeAlerts = alerts.filter(a => !dismissed.has(a.id));
+export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts, setAlerts, socket }) => {
+  const activeAlerts = alerts;
 
-  const handleAnalyze = (id: string) => {
+  const handleAnalyze = (id: string, user: string) => {
     toast.info(`Analyse approfondie de ${id}...`);
     setTimeout(() => {
       toast.success(`Menace ${id} neutralisée automatiquement.`);
-      setDismissed(prev => new Set(prev).add(id));
+      if (setAlerts) {
+        setAlerts(prev => prev.filter(a => a.id !== id));
+      }
     }, 1500);
   };
 
-  const handleQueue = (id: string) => {
+  const handleQueue = (id: string, user: string) => {
     toast('Alerte mise en attente.');
-    setDismissed(prev => new Set(prev).add(id));
+    if (setAlerts) {
+      setAlerts(prev => prev.filter(a => a.id !== id));
+    }
   };
 
   return (
@@ -53,7 +58,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
               }`}
             >
               <div className="flex justify-between items-start mb-1">
-                <div className="text-[10px] font-bold tracking-tight text-white">
+                <div className="text-[10px] font-bold tracking-tight text-slate-900">
                   {alert.type} <span className="text-slate-500">— {alert.user}</span>
                 </div>
                 <div className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded ${
@@ -69,14 +74,14 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({ alerts }) => {
 
               <div className="flex items-center gap-2">
                 <button 
-                  onClick={() => handleAnalyze(alert.id)}
+                  onClick={() => handleAnalyze(alert.id, alert.user)}
                   className="bg-[#0052FF] text-white text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:bg-blue-700 transition-colors"
                 >
                   Analyser
                 </button>
                 <button 
-                  onClick={() => handleQueue(alert.id)}
-                  className="bg-[var(--color-bg-main)] text-slate-400 border border-[var(--color-border-subtle)] text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:text-white transition-colors"
+                  onClick={() => handleQueue(alert.id, alert.user)}
+                  className="bg-[var(--color-bg-main)] text-slate-400 border border-[var(--color-border-subtle)] text-[9px] px-3 py-1.5 rounded uppercase font-black tracking-widest hover:text-slate-900 transition-colors"
                 >
                   Mettre en attente
                 </button>

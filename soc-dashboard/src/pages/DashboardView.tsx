@@ -11,30 +11,38 @@ interface DashboardViewProps {
     transactions: Transaction[];
     alerts: Alert[];
     stats: any;
+    socket?: any;
+    setAlerts?: React.Dispatch<React.SetStateAction<Alert[]>>;
   };
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ data }) => {
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
+    <div className="flex-1 flex flex-col min-h-screen bg-[var(--color-bg-main)] p-6 gap-6">
       <KPIStrip stats={data.stats} />
-      <div className="flex-1 flex overflow-hidden">
-        <section className="w-[320px] bg-[var(--color-surface)] border-r border-[var(--color-border-subtle)] flex flex-col flex-shrink-0 overflow-hidden">
-          <TransactionFeed transactions={data.transactions} />
-        </section>
-        <div className="flex-1 flex flex-col overflow-hidden bg-[var(--color-bg-main)]">
-          <div className="flex-1 flex gap-4 p-4 overflow-hidden">
-            <div className="flex-[1.5] h-full">
-              <FraudMap />
-            </div>
-            <div className="flex-1 h-full min-w-[340px]">
-              <AlertsPanel alerts={data.alerts} />
-            </div>
+      
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        
+        {/* Colonne de gauche: Carte + Analytiques (très grand) */}
+        <div className="xl:col-span-2 flex flex-col gap-6">
+          <div className="h-[600px] bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden shadow-sm relative">
+            <FraudMap />
           </div>
-          <div className="h-[300px] p-4 pt-0 overflow-hidden">
+          <div className="h-[400px] bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden p-6 shadow-sm">
             <AnalyticsGrid />
           </div>
         </div>
+
+        {/* Colonne de droite: Alertes + Flux */}
+        <div className="flex flex-col gap-6">
+          <div className="h-[450px] bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden shadow-sm">
+            <AlertsPanel alerts={data.alerts} setAlerts={data.setAlerts} socket={data.socket} />
+          </div>
+          <div className="h-[550px] bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden shadow-sm">
+            <TransactionFeed transactions={data.transactions} />
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 interface AlertsViewProps {
   data: {
     alerts: Alert[];
+    socket?: any;
+    setAlerts?: React.Dispatch<React.SetStateAction<Alert[]>>;
   };
 }
 
@@ -13,8 +15,8 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [investigationNotes, setInvestigationNotes] = useState('');
+  const [processing, setProcessing] = useState(false);
 
-  // Remove duplicate/dismissed management for now, just show all active from hook
   const filteredAlerts = data.alerts.filter(a => 
     a.type.toLowerCase().includes(searchTerm.toLowerCase()) || 
     a.user.toLowerCase().includes(searchTerm.toLowerCase())
@@ -24,8 +26,31 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
 
   const handleAction = (action: string) => {
     if (!selectedAlert) return;
-    toast.success(`Action "${action}" appliquée sur l'alerte ${selectedAlert.id}`);
-    setInvestigationNotes('');
+    setProcessing(true);
+    
+    if (action === 'BLOCK' || action === 'REQUIRE_OTP') {
+       if (data.socket) {
+          data.socket.emit('SOC_ACTION', {
+             action: action,
+             alertId: selectedAlert.id,
+             userId: selectedAlert.user
+          });
+          toast.info(action === 'BLOCK' ? `Ordre de blocage envoyé. En attente du mobile...` : `Demande d'OTP envoyée. En attente du client...`);
+       }
+       // On NE RETIRE PAS l'alerte ici. On attend que le client valide sur son mobile !
+       setProcessing(false);
+    } else {
+       // Si c'est Ignorer, on traite localement
+       toast.success(`Alerte ${selectedAlert.id} marquée comme ignorée.`);
+       setTimeout(() => {
+          if (data.setAlerts) {
+             data.setAlerts(prev => prev.filter(a => a.id !== selectedAlert.id));
+          }
+          setProcessing(false);
+          setSelectedAlertId(null);
+          setInvestigationNotes('');
+       }, 1000);
+    }
   };
 
   return (
@@ -33,7 +58,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
       {/* Left List */}
       <div className="w-[400px] border-r border-[var(--color-border-subtle)] flex flex-col bg-[var(--color-surface)]">
         <div className="p-4 border-b border-[var(--color-border-subtle)]">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-white flex items-center gap-2 mb-4">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-slate-900 flex items-center gap-2 mb-4">
             <ShieldAlert className="w-5 h-5 text-rose-500" />
             Centre de Triage
           </h2>
@@ -44,7 +69,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
               placeholder="Filtrer par type ou utilisateur..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-md pl-10 pr-4 py-2 text-[11px] text-white focus:ring-1 focus:ring-[#0052FF] outline-none"
+              className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-md pl-10 pr-4 py-2 text-[11px] text-slate-900 focus:ring-1 focus:ring-[#0052FF] outline-none"
             />
           </div>
         </div>
@@ -62,7 +87,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
-                  <span className="text-[11px] font-bold text-white">{alert.type}</span>
+                  <span className="text-[11px] font-bold text-slate-900">{alert.type}</span>
                   <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${alert.severity === 'critical' ? 'bg-rose-900/50 text-rose-400' : 'bg-amber-900/50 text-amber-400'}`}>
                     Score: {alert.aiScore}%
                   </span>
@@ -83,7 +108,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
             <div className="p-8 border-b border-[var(--color-border-subtle)] bg-[var(--color-surface)]">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h1 className="text-2xl font-bold text-white mb-2">{selectedAlert.type}</h1>
+                  <h1 className="text-2xl font-bold text-slate-900 mb-2">{selectedAlert.type}</h1>
                   <p className="text-slate-400 text-sm">ID Alerte: {selectedAlert.id} • {new Date(selectedAlert.timestamp).toLocaleString()}</p>
                 </div>
                 <div className={`text-xl font-bold font-mono px-4 py-2 rounded-lg ${selectedAlert.severity === 'critical' ? 'bg-rose-900/30 text-rose-500 border border-rose-500/50' : 'bg-amber-900/30 text-amber-500 border border-amber-500/50'}`}>
@@ -94,11 +119,11 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="bg-[var(--color-bg-main)] p-4 rounded-lg border border-[var(--color-border-subtle)]">
                   <span className="block text-[10px] text-slate-500 uppercase font-bold mb-1">Utilisateur</span>
-                  <span className="text-white font-medium">{selectedAlert.user}</span>
+                  <span className="text-slate-900 font-medium">{selectedAlert.user}</span>
                 </div>
                 <div className="bg-[var(--color-bg-main)] p-4 rounded-lg border border-[var(--color-border-subtle)]">
                   <span className="block text-[10px] text-slate-500 uppercase font-bold mb-1">Montant en jeu</span>
-                  <span className="text-white font-medium">${selectedAlert.amount.toLocaleString()}</span>
+                  <span className="text-slate-900 font-medium">${selectedAlert.amount.toLocaleString()}</span>
                 </div>
                 <div className="bg-[var(--color-bg-main)] p-4 rounded-lg border border-[var(--color-border-subtle)]">
                   <span className="block text-[10px] text-slate-500 uppercase font-bold mb-1">Sévérité</span>
@@ -123,22 +148,25 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
               <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Actions Requises</h3>
               <div className="flex gap-4">
                 <button 
-                  onClick={() => handleAction('Bloquer Utilisateur')}
-                  className="flex items-center gap-2 bg-rose-500/10 text-rose-500 border border-rose-500/50 hover:bg-rose-500 hover:text-white transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide"
+                  disabled={processing}
+                  onClick={() => handleAction('BLOCK')}
+                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${processing ? 'opacity-50 cursor-not-allowed bg-slate-200 text-slate-500' : 'bg-rose-500/10 text-rose-500 border-rose-500/50 hover:bg-rose-500 hover:text-white'}`}
                 >
                   <ShieldOff className="w-4 h-4" /> Bloquer Utilisateur
                 </button>
                 <button 
-                  onClick={() => handleAction('Demander OTP')}
-                  className="flex items-center gap-2 bg-blue-500/10 text-blue-500 border border-blue-500/50 hover:bg-blue-500 hover:text-white transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide"
+                  disabled={processing}
+                  onClick={() => handleAction('REQUIRE_OTP')}
+                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${processing ? 'opacity-50 cursor-not-allowed bg-slate-200 text-slate-500' : 'bg-blue-500/10 text-blue-500 border-blue-500/50 hover:bg-blue-500 hover:text-white'}`}
                 >
                   <AlertTriangle className="w-4 h-4" /> Exiger OTP
                 </button>
                 <button 
-                  onClick={() => handleAction('Marquer comme Faux Positif')}
-                  className="flex items-center gap-2 bg-emerald-500/10 text-emerald-500 border border-emerald-500/50 hover:bg-emerald-500 hover:text-white transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide"
+                  disabled={processing}
+                  onClick={() => handleAction('IGNORE')}
+                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${processing ? 'opacity-50 cursor-not-allowed bg-slate-200 text-slate-500' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/50 hover:bg-emerald-500 hover:text-white'}`}
                 >
-                  <CheckCircle className="w-4 h-4" /> Faux Positif (Ignorer)
+                  <CheckCircle className="w-4 h-4" /> Valider (Ignorer)
                 </button>
               </div>
             </div>

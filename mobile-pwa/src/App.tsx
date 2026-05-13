@@ -4,6 +4,7 @@ import './App.css';
 
 const CORRECT_PIN = "1234";
 const TARGET_USER = "Jean Dupont";
+const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL || 'http://localhost:3000';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,6 +22,7 @@ function App() {
   // Nouvelles Vues après action
   const [cardSuspended, setCardSuspended] = useState(false);
   const [transactionApproved, setTransactionApproved] = useState(false);
+  const [socket, setSocket] = useState<any>(null);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -34,7 +36,7 @@ function App() {
     const script = document.createElement('script');
     script.src = "https://cdn.socket.io/4.7.4/socket.io.min.js";
     script.onload = () => {
-      const socket = (window as any).io('http://localhost:3000');
+      const socket = (window as any).io(GATEWAY_URL);
       socket.on('connect', () => console.log('Connected to Gateway'));
       socket.on('ALERT_NEW', (data: any) => {
         
@@ -58,6 +60,20 @@ function App() {
            console.log(`[IGNORE] Background Noise fraud for ${data.user} intercepted but hidden from mobile UI.`);
         }
       });
+      
+      socket.on('SOC_ACTION_BROADCAST', (data: any) => {
+        if (data.userId === TARGET_USER) {
+          if (data.action === 'REQUIRE_OTP' || data.action === 'BLOCK') {
+             // Forcer l'écran de PIN suite à la demande du Dashboard SOC
+             setActiveAlert({ alert_id: data.alertId, amount: '---', fraud_score: 100 });
+             setPendingAction(data.action === 'BLOCK' ? 'BLOCK' : 'APPROVE');
+             setShowPinPad(true);
+             setVerificationPin("");
+          }
+        }
+      });
+
+      setSocket(socket);
     };
     document.body.appendChild(script);
   }, []);
@@ -95,6 +111,13 @@ function App() {
       if (newPin.length === 4) {
         if (newPin === CORRECT_PIN) {
           
+          if (socket) {
+             socket.emit('USER_ACTION', {
+                alertId: activeAlert?.alert_id,
+                action: pendingAction === 'BLOCK' ? 'BLOCKED' : 'VERIFIED'
+             });
+          }
+
           // Action Post-PIN selon le choix
           if (pendingAction === 'BLOCK') {
              // Afficher l'écran "Carte Suspendue"

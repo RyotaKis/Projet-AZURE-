@@ -20,7 +20,7 @@ export const IdentityView: React.FC = () => {
     <div className="flex-1 flex flex-col overflow-hidden bg-[var(--color-bg-main)] p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+          <h1 className="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
             <Users className="w-5 h-5 text-[#0052FF]" />
             Identity & KYC Intelligence
           </h1>
@@ -31,7 +31,7 @@ export const IdentityView: React.FC = () => {
           placeholder="Rechercher utilisateur, IP..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-64 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-lg px-4 py-2 text-[11px] text-white focus:ring-1 focus:ring-[#0052FF] outline-none"
+          className="w-64 bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-lg px-4 py-2 text-[11px] text-slate-900 focus:ring-1 focus:ring-[#0052FF] outline-none"
         />
       </div>
 
@@ -50,7 +50,7 @@ export const IdentityView: React.FC = () => {
                   {user.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white mb-0.5">{user.name}</h3>
+                  <h3 className="text-sm font-bold text-slate-900 mb-0.5">{user.name}</h3>
                   <span className="text-[10px] text-slate-500 font-mono">{user.id}</span>
                 </div>
               </div>

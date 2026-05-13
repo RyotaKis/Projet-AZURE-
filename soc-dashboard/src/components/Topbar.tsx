@@ -23,7 +23,7 @@ export const Topbar: React.FC<TopbarProps> = ({ stats }) => {
     <header className="fixed top-0 left-16 right-0 h-14 bg-[var(--color-surface)] border-b border-[var(--color-border-subtle)] flex items-center justify-between px-6 z-40 transition-colors">
       <div className="flex items-center gap-4">
         <img src="/LOGO WHITE.png" alt="AZUR+ Logo" className="h-6 object-contain" />
-        <h1 className="font-bold text-lg tracking-tight hidden md:block text-white">AZUR<span className="text-[#0052FF] font-black">+</span> <span className="text-[10px] font-normal text-slate-400 ml-2 uppercase tracking-widest leading-none">Centre de Commandement</span></h1>
+        <h1 className="font-bold text-lg tracking-tight hidden md:block text-slate-900">AZUR<span className="text-[#0052FF] font-black">+</span> <span className="text-[10px] font-normal text-slate-400 ml-2 uppercase tracking-widest leading-none">Centre de Commandement</span></h1>
         <div className="h-4 w-[1px] bg-[var(--color-border-subtle)] mx-2 hidden sm:block"></div>
         <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> SYSTÈME OPÉRATIONNEL 
@@ -42,12 +42,18 @@ export const Topbar: React.FC<TopbarProps> = ({ stats }) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Wifi className="w-3 h-3 text-slate-500" />
+          <div 
+            className="flex items-center gap-2 cursor-pointer hover:bg-slate-800/10 p-2 rounded transition-colors"
+            onClick={() => toast.success('Connexion WebSocket: Stable')}
+          >
+            <Wifi className="w-3 h-3 text-emerald-500" />
             <span className="text-[10px] font-mono font-bold text-slate-400">{stats.latency}ms</span>
           </div>
           <div className="flex items-center gap-2 border-l border-[var(--color-border-subtle)] pl-4">
-            <div className="w-7 h-7 rounded-full bg-[var(--color-bg-main)] flex items-center justify-center text-slate-400 border border-[var(--color-border-subtle)]">
+            <div 
+              className="w-7 h-7 rounded-full bg-[var(--color-bg-main)] flex items-center justify-center text-[#0052FF] border border-[#0052FF]/30 cursor-pointer hover:bg-[#0052FF]/10 transition-colors"
+              onClick={() => toast.info('Profil de l\'Opérateur Principal')}
+            >
               <User className="w-4 h-4" />
             </div>
             <span className="text-[10px] font-bold uppercase tracking-tight hidden lg:block text-slate-300">Opérateur Principal</span>

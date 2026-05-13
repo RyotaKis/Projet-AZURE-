@@ -10,36 +10,44 @@ export class AppService implements OnModuleInit {
   onModuleInit() {
     this.logger.log('Starting Background Traffic Generator...');
     
-    // Génère un trafic réaliste (Safe + Fraude) toutes les 3 secondes
+    const firstNames = ['Marie', 'Luc', 'Sophie', 'Thomas', 'Julie', 'Nicolas', 'Camille', 'Antoine', 'Léa', 'Hugo', 'Sarah', 'Paul'];
+    const lastNames = ['Dubois', 'Martin', 'Bernard', 'Petit', 'Robert', 'Richard', 'Durand', 'Leroy', 'Moreau', 'Simon', 'Laurent', 'Lefebvre'];
+
+    // Génère un flux de transactions continu
     setInterval(() => {
-      const isSuspect = Math.random() > 0.8; // 20% de chance d'être une fraude !
-      const score = isSuspect ? Math.floor(Math.random() * 40) + 60 : Math.floor(Math.random() * 25);
+      const isSuspect = Math.random() > 0.85; // 15% de chance d'être suspect
+      const score = isSuspect ? Math.floor(Math.random() * 85) + 15 : Math.floor(Math.random() * 15);
       
+      const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+      const randomName = `${randomFirstName} ${randomLastName}`;
+
       const tx = {
-        id: `TX_LIVE_${Date.now()}`,
-        amount: isSuspect ? Math.floor(Math.random() * 5000) + 1000 : Math.floor(Math.random() * 50) + 5,
+        id: `TX_LIVE_${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+        amount: isSuspect ? Math.floor(Math.random() * 3000) + 500 : Math.floor(Math.random() * 200) + 5,
         currency: 'EUR',
-        user: `User_${Math.floor(Math.random() * 1000)}`,
+        user: randomName,
         country_txn: isSuspect ? (Math.random() > 0.5 ? 'RU' : 'CN') : 'FR',
         fraud_score: score,
-        status: score > 40 ? 'blocked' : 'approved',
+        status: score > 80 ? 'critical' : score > 40 ? 'warning' : 'safe',
         created_at: new Date().toISOString()
       };
       
       this.eventsGateway.broadcastTransaction(tx);
-      
-      if (score > 40) {
+
+      // Diffuser une alerte uniquement si le score est très élevé pour ne pas polluer
+      if (score > 80) {
         this.eventsGateway.broadcastAlert({
            alert_id: `ALT_AUTO_${Date.now()}`,
            transaction_id: tx.id,
-           severity: score > 80 ? 'critical' : 'warning',
+           severity: 'critical',
            fraud_score: score,
            user: tx.user,
            amount: tx.amount,
-           rules_triggered: [{ rule: 'AUTO_01', name: 'Détection Automatique (Bruit de fond)' }]
+           rules_triggered: [{ rule: 'AUTO_02', name: 'Comportement Inhabituel (Auto)' }]
          });
       }
-    }, 4000);
+    }, 2000);
   }
 
   getHello(): string {

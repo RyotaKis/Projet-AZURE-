@@ -6,12 +6,12 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   --color-brand-blue: #0052FF;
-  --color-bg-main: #0a0f18;
-  --color-sidebar-bg: #05080f;
-  --color-surface: #111827;
-  --color-border-subtle: #1f2937;
-  --color-text-main: #f8fafc;
-  --color-text-muted: #94a3b8;
+  --color-bg-main: #f8fafc;
+  --color-sidebar-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-border-subtle: #e2e8f0;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
   
   --color-success: #10B981;
   --color-warning: #F59E0B;
@@ -30,7 +30,7 @@
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(rgba(10, 15, 24, 0) 50%, rgba(10, 15, 24, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background: linear-gradient(rgba(248, 250, 252, 0) 50%, rgba(248, 250, 252, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
   background-size: 100% 2px, 3px 100%;
   pointer-events: none;
   z-index: 10;

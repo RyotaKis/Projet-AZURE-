@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { toast } from 'sonner';
 import type { Transaction, Alert, RiskLevel } from '../types';
 
-const GATEWAY_URL = 'http://localhost:3000';
+const GATEWAY_URL = import.meta.env.VITE_API_GATEWAY_URL || 'http://localhost:3000';
 
 export function useRealTimeData() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -75,11 +76,22 @@ export function useRealTimeData() {
       }));
     }, 2000);
 
+    newSocket.on('USER_ACTION_BROADCAST', (data) => {
+       // Lorsqu'un utilisateur Mobile valide ou bloque son OTP
+       if (data.action === 'BLOCKED') {
+           toast.error(`Alerte Résolue: Le client a confirmé le BLOCAGE de sa carte !`);
+       } else if (data.action === 'VERIFIED') {
+           toast.success(`Alerte Résolue: Le client a VALIDÉ la transaction.`);
+       }
+       setAlerts(prev => prev.filter(a => a.id !== data.alertId));
+       setStats(prev => ({ ...prev, activeAlerts: Math.max(0, prev.activeAlerts - 1) }));
+    });
+
     return () => {
       clearInterval(pingInterval);
       newSocket.close();
     };
   }, []);
 
-  return { transactions, alerts, stats };
+  return { transactions, alerts, stats, socket, setAlerts, setStats };
 }

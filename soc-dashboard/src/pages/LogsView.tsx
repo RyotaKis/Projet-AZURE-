@@ -46,7 +46,7 @@ export const LogsView: React.FC = () => {
     <div className="flex-1 flex flex-col overflow-hidden bg-[var(--color-bg-main)] p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+          <h1 className="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
             <Database className="w-5 h-5 text-[#0052FF]" />
             Logs Systèmes & WebSockets
           </h1>
@@ -68,7 +68,7 @@ export const LogsView: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 bg-[#05080f] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden flex flex-col font-mono text-[11px] relative shadow-2xl">
+      <div className="flex-1 bg-[var(--color-sidebar-bg)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden flex flex-col font-mono text-[11px] relative shadow-2xl">
         <div className="absolute top-0 left-0 right-0 h-8 bg-slate-900 border-b border-slate-800 flex items-center px-4 gap-2 z-10">
           <Terminal className="w-3 h-3 text-slate-500" />
           <span className="text-slate-400 font-bold">root@azur-gateway-prod ~ tail -f /var/log/nestjs/app.log</span>

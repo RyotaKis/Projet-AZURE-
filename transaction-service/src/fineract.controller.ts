@@ -29,7 +29,7 @@ export class FineractWebhookController {
         hour_of_day: payload.hour_of_day || new Date().getHours()
       };
 
-      const fraudEngineUrl = process.env.FRAUD_ENGINE_URL || 'http://localhost:8000';
+      const fraudEngineUrl = process.env.FRAUD_ENGINE_URL || 'http://127.0.0.1:8000';
       // Appel natif vers Fraud Engine
       fetch(`${fraudEngineUrl}/predict`, {
         method: 'POST',
@@ -49,7 +49,7 @@ export class FineractWebhookController {
 
          this.logger.log(`Fraud Score computed: ${computedScore} (Original: ${JSON.stringify(data)})`);
          
-         const gatewayUrl = process.env.GATEWAY_URL || 'http://localhost:3000';
+         const gatewayUrl = process.env.GATEWAY_URL || 'http://127.0.0.1:3000';
          // Broadcast à l'API Gateway
          fetch(`${gatewayUrl}/gateway/intercept`, {
             method: 'POST',

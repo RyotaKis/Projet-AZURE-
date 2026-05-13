@@ -49,7 +49,7 @@ export const FraudMap: React.FC = () => {
   return (
     <div className="bg-[#0F172A] rounded border border-slate-800 overflow-hidden flex flex-col h-full shadow-2xl relative">
       <div className="absolute top-4 left-4 z-10">
-        <h3 className="text-[10px] font-bold text-white uppercase tracking-widest leading-none flex items-center gap-2">
+        <h3 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest leading-none flex items-center gap-2">
           <MapIcon className="w-3 h-3 text-blue-500" />
           Carte Globale des Fraudes <span className="font-normal text-slate-500">â€” Événements en direct</span>
         </h3>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Transaction } from '../types';
 import { Globe, User, Clock } from 'lucide-react';
@@ -8,6 +9,8 @@ interface TransactionFeedProps {
 }
 
 export const TransactionFeed: React.FC<TransactionFeedProps> = ({ transactions }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-[var(--color-surface)] border-none overflow-hidden flex flex-col h-full rounded-none">
       <div className="p-3 border-b border-[var(--color-border-subtle)] flex justify-between items-center bg-[var(--color-bg-main)]">
@@ -26,27 +29,28 @@ export const TransactionFeed: React.FC<TransactionFeedProps> = ({ transactions }
                 key={tx.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className={`p-3 border-b border-slate-800/50 transition-colors hover:bg-slate-800/30 ${
-                  tx.status === 'critical' ? 'bg-rose-900/20' : 
-                  tx.status === 'warning' ? 'bg-amber-900/20' : ''
+                onClick={() => navigate('/transactions')}
+                className={`p-3 cursor-pointer border-b border-[var(--color-border-subtle)] transition-colors hover:bg-slate-50 ${
+                  tx.status === 'critical' ? 'bg-rose-50' : 
+                  tx.status === 'warning' ? 'bg-amber-50' : ''
                 }`}
               >
                 <div className="flex justify-between font-bold mb-1">
                   <span className="text-slate-500">{tx.id}</span>
                   <span className={
-                    tx.status === 'critical' ? 'text-rose-500' : 
-                    tx.status === 'warning' ? 'text-amber-500' : 'text-emerald-500'
+                    tx.status === 'critical' ? 'text-rose-600' : 
+                    tx.status === 'warning' ? 'text-amber-600' : 'text-emerald-600'
                   }>
                     {tx.status.toUpperCase()}
                   </span>
                 </div>
-                <div className="flex justify-between text-slate-400 mb-2">
+                <div className="flex justify-between text-slate-500 mb-2">
                   <span className="truncate max-w-[120px]">{tx.user} ({tx.country})</span>
-                  <span className="font-bold text-slate-300">${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-bold text-slate-900">${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 {tx.riskScore > 30 && (
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1 bg-slate-200 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${tx.riskScore}%` }}

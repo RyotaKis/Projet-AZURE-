@@ -31,7 +31,7 @@ export const KPIStrip: React.FC<KPIStripProps> = ({ stats }) => {
           <div className="flex items-baseline gap-2">
             <span className={`text-xl font-bold font-mono tracking-tight ${
               item.isAlert ? 'text-rose-600' : 
-              item.isSuccess ? 'text-emerald-500' : 'text-white'
+              item.isSuccess ? 'text-emerald-500' : 'text-slate-900'
             }`}>
               {item.format(item.value)}
             </span>

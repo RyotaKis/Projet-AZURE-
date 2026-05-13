@@ -1,0 +1,44 @@
+@startuml Context_AZUR
+skinparam rectangle {
+    BackgroundColor #0ea5e9
+    FontColor white
+    BorderColor #0284c7
+    roundCorner 0
+}
+skinparam actor {
+    BackgroundColor white
+    BorderColor #0284c7
+}
+
+actor "Client Final" as Client <<ActeurBleu>>
+actor "Analyste SOC" as Analyste <<ActeurBleu>>
+actor "Simulateur\nde Transactions" as Sim <<ActeurBleu>>
+
+rectangle "Système de Détection de Fraudes (AZUR+)" as AZUR
+
+actor "Core Banking System\n(Fineract)" as Fineract <<ActeurBlanc>>
+actor "Serveur d'Audit\net Sécurité" as Audit <<ActeurBlanc>>
+actor "Passerelle SMS" as Notif <<ActeurBlanc>>
+
+' LIAISONS (Utilisation de <-right- pour éviter les crashs cycliques du moteur Graphviz)
+Client -right-> AZUR : "1..* Saisie PIN (OTP)"
+Client <-right- AZUR : "Demande d'authentification"
+
+Analyste -right-> AZUR : "1..* Décision remédiation"
+Analyste <-right- AZUR : "Remontée d'alertes"
+
+Sim -right-> AZUR : "1 Injection de flux"
+
+AZUR -right-> Fineract : "1 Ordre de blocage"
+AZUR <-right- Fineract : "1..* Flux transactionnel"
+
+AZUR -right-> Audit : "1..* Journalisation (Logs)"
+AZUR -right-> Notif : "1..* Ordre SMS"
+
+' ORDONNANCEMENT VERTICAL (Syntaxe safe pour les liens cachés)
+Client -[hidden]-> Analyste
+Analyste -[hidden]-> Sim
+
+Fineract -[hidden]-> Audit
+Audit -[hidden]-> Notif
+@enduml

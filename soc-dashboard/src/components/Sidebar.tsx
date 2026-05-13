@@ -24,7 +24,7 @@ const navItems = [
 
 export const Sidebar: React.FC = () => {
   return (
-    <aside className="fixed left-0 top-0 h-screen w-16 bg-[#05080f] flex flex-col items-center py-6 gap-8 z-50 flex-shrink-0 border-r border-[var(--color-border-subtle)]">
+    <aside className="fixed left-0 top-0 h-screen w-16 bg-[var(--color-sidebar-bg)] flex flex-col items-center py-6 gap-8 z-50 flex-shrink-0 border-r border-[var(--color-border-subtle)]">
       <div className="w-10 h-10 bg-[#0052FF] rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
         A+
       </div>
@@ -37,7 +37,7 @@ export const Sidebar: React.FC = () => {
             title={item.label}
             className={({ isActive }) => 
               `relative cursor-pointer transition-colors p-2 rounded-md ${
-                isActive ? 'text-[#0052FF] bg-[var(--color-surface)]' : 'text-slate-500 hover:text-white hover:bg-[var(--color-surface)]'
+                isActive ? 'text-[#0052FF] bg-[var(--color-surface)]' : 'text-slate-500 hover:text-slate-900 hover:bg-[var(--color-surface)]'
               }`
             }
           >
@@ -49,7 +49,7 @@ export const Sidebar: React.FC = () => {
         ))}
       </nav>
 
-      <div className="mt-auto mb-4 text-slate-500 hover:text-white cursor-pointer transition-colors p-2 hover:bg-[var(--color-surface)] rounded-md">
+      <div className="mt-auto mb-4 text-slate-500 hover:text-slate-900 cursor-pointer transition-colors p-2 hover:bg-[var(--color-surface)] rounded-md">
         <Settings className="w-6 h-6" />
       </div>
     </aside>

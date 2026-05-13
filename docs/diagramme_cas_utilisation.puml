@@ -1,0 +1,65 @@
+@startuml UseCase_AZUR
+left to right direction
+skinparam usecase {
+    BackgroundColor #0ea5e9
+    FontColor white
+    BorderColor #0284c7
+}
+skinparam actor {
+    BackgroundColor white
+    BorderColor #0284c7
+}
+skinparam packageStyle rectangle
+
+' --- Acteurs Principaux (Gauche) ---
+actor "Simulateur" as Sim
+actor "Client\n(App Mobile)" as Client
+actor "Analyste SOC\n(Dashboard)" as Analyste
+
+' --- Acteurs Secondaires (Droite) ---
+actor "Core Banking System\n(Apache Fineract)" as Fineract
+
+rectangle "Système AZUR+" {
+    
+    usecase "S'authentifier" as UC_Auth
+    
+    usecase "Initier un virement bancaire" as UC_Virement
+    usecase "Consulter son solde et historique" as UC_Solde
+    usecase "Traiter un Challenge\n(Saisie PIN)" as UC_ChallengeClient
+    
+    usecase "Visualiser le flux et\nles statistiques" as UC_Visualiser
+    usecase "Inspecter la file\nd'attente des fraudes" as UC_Inspecter
+    
+    ' Extensions (Alternatives de décision métier)
+    usecase "Marquer comme Faux Positif" as UC_FauxPositif
+    usecase "Confirmer la fraude avérée" as UC_Confirmer
+    usecase "Exiger un Challenge\nde Sécurité (OTP)" as UC_OTP
+    usecase "Activer manuellement\nle gel d'un compte" as UC_Gel
+}
+
+' --- Relations Acteurs Principaux -> Cas d'utilisation ---
+Sim --> UC_Virement
+
+Client --> UC_Virement
+Client --> UC_Solde
+Client --> UC_ChallengeClient
+
+Analyste --> UC_Visualiser
+Analyste --> UC_Inspecter
+
+' --- Relations Includes (Condition préalable requise) ---
+UC_Virement ..> UC_Auth : <<include>>
+UC_Solde ..> UC_Auth : <<include>>
+UC_Visualiser ..> UC_Auth : <<include>>
+UC_Inspecter ..> UC_Auth : <<include>>
+
+' --- Relations Extends (Flèche de l'extension VERS le cas de base) ---
+UC_FauxPositif ..> UC_Inspecter : <<extend>>
+UC_Confirmer ..> UC_Inspecter : <<extend>>
+UC_OTP ..> UC_Inspecter : <<extend>>
+UC_Gel ..> UC_Inspecter : <<extend>>
+
+' --- Relations Acteurs Secondaires (Système -> Acteur) ---
+UC_Gel --> Fineract
+
+@enduml

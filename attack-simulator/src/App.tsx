@@ -76,6 +76,8 @@ const SCENARIOS = [
   }
 ];
 
+const TRANSACTION_SERVICE_URL = import.meta.env.VITE_TRANSACTION_SERVICE_URL || 'http://localhost:4000';
+
 function App() {
   const [logs, setLogs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -86,9 +88,10 @@ function App() {
 
   const fireScenario = async (scenario: any) => {
     setLoading(true);
-    addLog(`Firing: ${scenario.name}...`);
+    const newLog = `[${new Date().toLocaleTimeString()}] Injection Payload: ${scenario.name}...`;
+    setLogs(prev => [newLog, ...prev].slice(0, 50));
     try {
-      const res = await fetch('http://localhost:4000/api/webhook/fineract', {
+      const res = await fetch(`${TRANSACTION_SERVICE_URL}/api/webhook/fineract`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -106,9 +109,9 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'monospace', background: '#0f172a', color: '#e2e8f0', minHeight: '100vh' }}>
-      <h1 style={{ color: '#38bdf8' }}>AZURE+ Attack Simulator</h1>
-      <p>Injecte directement des payloads vers le Transaction Service (Port 4000).</p>
+    <div style={{ padding: '2rem', fontFamily: 'monospace', background: '#f8fafc', color: '#0f172a', minHeight: '100vh' }}>
+      <h1 style={{ color: '#0284c7' }}>AZURE+ Injecteur de Flux Métier</h1>
+      <p style={{ color: '#475569' }}>Console d'injection de payloads vers le Transaction Service (Port 4000).</p>
       
       <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginTop: '2rem' }}>
         {SCENARIOS.map((s, i) => (
@@ -116,16 +119,16 @@ function App() {
             key={i} 
             onClick={() => fireScenario(s)}
             disabled={loading}
-            style={{ padding: '1rem', background: '#1e293b', border: '1px solid #334155', color: '#fff', cursor: 'pointer', borderRadius: '8px' }}
+            style={{ padding: '1rem', background: '#ffffff', border: '1px solid #cbd5e1', color: '#0f172a', cursor: 'pointer', borderRadius: '8px', fontWeight: 'bold', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
           >
             {s.name}
           </button>
         ))}
       </div>
 
-      <div style={{ marginTop: '2rem', background: '#020617', padding: '1rem', borderRadius: '8px', minHeight: '200px', maxHeight: '400px', overflowY: 'auto' }}>
-        <h3 style={{ color: '#94a3b8', marginTop: 0 }}>Terminal Logs</h3>
-        {logs.map((l, i) => <div key={i} style={{ borderBottom: '1px solid #1e293b', padding: '4px 0' }}>{l}</div>)}
+      <div style={{ marginTop: '2rem', background: '#ffffff', border: '1px solid #e2e8f0', padding: '1rem', borderRadius: '8px', minHeight: '200px', maxHeight: '400px', overflowY: 'auto', boxShadow: 'inset 0 2px 4px 0 rgba(0,0,0,0.05)' }}>
+        <h3 style={{ color: '#64748b', marginTop: 0 }}>Terminal Logs</h3>
+        {logs.map((l, i) => <div key={i} style={{ borderBottom: '1px solid #f1f5f9', padding: '4px 0', color: '#334155' }}>{l}</div>)}
       </div>
     </div>
   );

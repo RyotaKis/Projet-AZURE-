@@ -39,4 +39,18 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handlePing(@MessageBody() data: string, @ConnectedSocket() client: Socket): string {
     return 'pong from AZURE+ Gateway';
   }
+
+  // Écoute les actions prises par l'agent SOC (ex: Exiger OTP) et les diffuse au mobile
+  @SubscribeMessage('SOC_ACTION')
+  handleSocAction(@MessageBody() data: any) {
+    this.logger.log(`SOC Action requested: ${data.action} for user ${data.userId}`);
+    this.server.emit('SOC_ACTION_BROADCAST', data);
+  }
+
+  // Écoute les actions résolues par l'utilisateur (ex: OTP validé) et les remonte au SOC
+  @SubscribeMessage('USER_ACTION')
+  handleUserAction(@MessageBody() data: any) {
+    this.logger.log(`User action received: ${data.action} for alert ${data.alertId}`);
+    this.server.emit('USER_ACTION_BROADCAST', data);
+  }
 }
