@@ -22,11 +22,10 @@ export const Topbar: React.FC<TopbarProps> = ({ stats }) => {
   return (
     <header className="fixed top-0 left-16 right-0 h-14 bg-[var(--color-surface)] border-b border-[var(--color-border-subtle)] flex items-center justify-between px-6 z-40 transition-colors">
       <div className="flex items-center gap-4">
-        <img src="/LOGO WHITE.png" alt="AZUR+ Logo" className="h-6 object-contain" />
-        <h1 className="font-bold text-lg tracking-tight hidden md:block text-slate-900">AZUR<span className="text-[#0052FF] font-black">+</span> <span className="text-[10px] font-normal text-slate-400 ml-2 uppercase tracking-widest leading-none">Centre de Commandement</span></h1>
+        <img src="/LOGO DARK.png" alt="AZUR+ Logo" className="h-10 object-contain" />
         <div className="h-4 w-[1px] bg-[var(--color-border-subtle)] mx-2 hidden sm:block"></div>
         <div className="hidden sm:flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> SYSTÈME OPÉRATIONNEL 
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> NETWORK: SECURE 
         </div>
       </div>
 
@@ -56,7 +55,7 @@ export const Topbar: React.FC<TopbarProps> = ({ stats }) => {
             >
               <User className="w-4 h-4" />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-tight hidden lg:block text-slate-300">Opérateur Principal</span>
+            <span className="text-[10px] font-bold uppercase tracking-tight hidden lg:block text-slate-300">Analyste SOC L3</span>
           </div>
         </div>
       </div>

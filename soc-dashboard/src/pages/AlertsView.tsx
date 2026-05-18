@@ -123,7 +123,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
                 </div>
                 <div className="bg-[var(--color-bg-main)] p-4 rounded-lg border border-[var(--color-border-subtle)]">
                   <span className="block text-[10px] text-slate-500 uppercase font-bold mb-1">Montant en jeu</span>
-                  <span className="text-slate-900 font-medium">${selectedAlert.amount.toLocaleString()}</span>
+                  <span className="text-slate-900 font-medium">{selectedAlert.amount.toLocaleString()} FCFA</span>
                 </div>
                 <div className="bg-[var(--color-bg-main)] p-4 rounded-lg border border-[var(--color-border-subtle)]">
                   <span className="block text-[10px] text-slate-500 uppercase font-bold mb-1">Sévérité</span>

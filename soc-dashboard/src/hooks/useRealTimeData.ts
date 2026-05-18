@@ -32,7 +32,7 @@ export function useRealTimeData() {
         user: tx.user || tx.user_id || 'Unknown',
         country: 'FRA', // mock if not provided
         amount: tx.amount,
-        currency: tx.currency || 'XOF',
+        currency: tx.currency || 'FCFA',
         riskScore: tx.fraud_score || 0,
         status: (tx.fraud_score >= 80 ? 'critical' : tx.fraud_score >= 40 ? 'warning' : 'safe') as RiskLevel
       };

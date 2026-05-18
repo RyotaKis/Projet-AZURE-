@@ -36,13 +36,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
       <div className="w-full max-w-md bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-2xl p-8 shadow-2xl relative z-10">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-[#0052FF]/10 rounded-2xl flex items-center justify-center mb-4 border border-[#0052FF]/20">
-            <Shield className="w-8 h-8 text-[#0052FF]" />
-          </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center">
-            AZUR<span className="text-[#0052FF] font-black">+</span>
-          </h1>
-          <p className="text-xs text-slate-500 mt-2 uppercase tracking-widest font-bold">Centre de Commandement SOC</p>
+          <img src="/LOGO DARK.png" alt="AZUR+ Logo" className="h-20 object-contain mb-4" />
+          <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Security Operations Center</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

@@ -25,8 +25,8 @@ const navItems = [
 export const Sidebar: React.FC = () => {
   return (
     <aside className="fixed left-0 top-0 h-screen w-16 bg-[var(--color-sidebar-bg)] flex flex-col items-center py-6 gap-8 z-50 flex-shrink-0 border-r border-[var(--color-border-subtle)]">
-      <div className="w-10 h-10 bg-[#0052FF] rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
-        A+
+      <div className="w-12 h-12 flex items-center justify-center">
+        <img src="/LOGO DARK.png" alt="Logo" className="w-full h-full object-contain" />
       </div>
 
       <nav className="flex flex-col gap-6 w-full items-center">

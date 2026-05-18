@@ -10,8 +10,8 @@ export class AppService implements OnModuleInit {
   onModuleInit() {
     this.logger.log('Starting Background Traffic Generator...');
     
-    const firstNames = ['Marie', 'Luc', 'Sophie', 'Thomas', 'Julie', 'Nicolas', 'Camille', 'Antoine', 'Léa', 'Hugo', 'Sarah', 'Paul'];
-    const lastNames = ['Dubois', 'Martin', 'Bernard', 'Petit', 'Robert', 'Richard', 'Durand', 'Leroy', 'Moreau', 'Simon', 'Laurent', 'Lefebvre'];
+    const firstNames = ['Sena', 'Koffi', 'Afiwa', 'Ousmane', 'Kwame', 'Femi', 'Mahougnon', 'Sètondji', 'Fidèle', 'Akouvi', 'Dodji', 'Komi'];
+    const lastNames = ['Dossou', 'Amoussou', 'Mensah', 'Traore', 'Gbedo', 'Kpadonou', 'Houngbedji', 'Agbessi', 'Zinsou', 'Soglo', 'Talon', 'Boko'];
 
     // Génère un flux de transactions continu
     setInterval(() => {
@@ -24,10 +24,10 @@ export class AppService implements OnModuleInit {
 
       const tx = {
         id: `TX_LIVE_${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
-        amount: isSuspect ? Math.floor(Math.random() * 3000) + 500 : Math.floor(Math.random() * 200) + 5,
-        currency: 'EUR',
+        amount: isSuspect ? Math.floor(Math.random() * 5000000) + 500000 : Math.floor(Math.random() * 150000) + 5000,
+        currency: 'FCFA',
         user: randomName,
-        country_txn: isSuspect ? (Math.random() > 0.5 ? 'RU' : 'CN') : 'FR',
+        country_txn: isSuspect ? (Math.random() > 0.5 ? 'RU' : 'CN') : 'BJ',
         fraud_score: score,
         status: score > 80 ? 'critical' : score > 40 ? 'warning' : 'safe',
         created_at: new Date().toISOString()

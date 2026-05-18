@@ -46,7 +46,7 @@ export const TransactionFeed: React.FC<TransactionFeedProps> = ({ transactions }
                 </div>
                 <div className="flex justify-between text-slate-500 mb-2">
                   <span className="truncate max-w-[120px]">{tx.user} ({tx.country})</span>
-                  <span className="font-bold text-slate-900">${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <span className="font-bold text-slate-900">{tx.amount.toLocaleString(undefined, { minimumFractionDigits: 0 })} FCFA</span>
                 </div>
                 {tx.riskScore > 30 && (
                   <div className="flex items-center gap-2">

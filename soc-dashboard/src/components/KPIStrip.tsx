@@ -14,11 +14,11 @@ interface KPIStripProps {
 
 export const KPIStrip: React.FC<KPIStripProps> = ({ stats }) => {
   const items = [
-    { label: 'Trans/Min', value: stats.tps * 60, format: (v: number) => v.toLocaleString(), trend: '+2.4%' },
-    { label: 'Taux Fraude', value: stats.fraudRate, format: (v: number) => `${v}%`, subtext: 'moy 24h' },
-    { label: 'Alertes Actives', value: stats.activeAlerts, format: (v: number) => v, isAlert: true },
-    { label: 'BloquÃ©s 1H', value: stats.blocked, format: (v: number) => v.toLocaleString() },
-    { label: 'Latence Nette', value: stats.latency, format: (v: number) => `${v}ms`, isSuccess: true },
+    { label: 'Volume (Tx/Min)', value: stats.tps * 60, format: (v: number) => v.toLocaleString(), trend: '+2.4%' },
+    { label: 'Taux de Fraude', value: stats.fraudRate, format: (v: number) => `${v}%`, subtext: 'Moy 24h' },
+    { label: 'Alertes Critiques', value: stats.activeAlerts, format: (v: number) => v, isAlert: true },
+    { label: 'Menaces Neutralisées', value: stats.blocked, format: (v: number) => v.toLocaleString() },
+    { label: 'Latence Réseau', value: stats.latency, format: (v: number) => `${v}ms`, isSuccess: true },
   ];
 
   return (
