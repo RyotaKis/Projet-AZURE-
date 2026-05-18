@@ -24,6 +24,12 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
 
   const selectedAlert = data.alerts.find(a => a.id === selectedAlertId) || filteredAlerts[0];
 
+  React.useEffect(() => {
+    if (selectedAlertId && !data.alerts.find(a => a.id === selectedAlertId)) {
+      setSelectedAlertId(null);
+    }
+  }, [data.alerts, selectedAlertId]);
+
   const handleAction = (action: string) => {
     if (!selectedAlert) return;
     setProcessing(true);

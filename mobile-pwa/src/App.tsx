@@ -127,6 +127,7 @@ export default function App() {
   const [socket, setSocket] = useState<any>(null);
   
   const [pendingAction, setPendingAction] = useState<'APPROVE' | 'BLOCK' | null>(null);
+  const [pendingAlertId, setPendingAlertId] = useState<string | null>(null);
   const [showPinPad, setShowPinPad] = useState(false);
   
   const [isCardBlocked, setIsCardBlocked] = useState(false);
@@ -166,11 +167,12 @@ export default function App() {
       });
       
       ioSocket.on('SOC_ACTION_BROADCAST', (data: any) => {
-        if (data.userId === TARGET_USER) {
-          if (data.action === 'REQUIRE_OTP' || data.action === 'BLOCK') {
-             setPendingAction(data.action === 'BLOCK' ? 'BLOCK' : 'APPROVE');
-             setShowPinPad(true);
-          }
+        // Pour la fluidité de la soutenance, la PWA réagit à toutes les actions SOC 
+        // (Simulant que c'est le tel de l'utilisateur ciblé)
+        if (data.action === 'REQUIRE_OTP' || data.action === 'BLOCK') {
+           setPendingAction(data.action === 'BLOCK' ? 'BLOCK' : 'APPROVE');
+           setPendingAlertId(data.alertId);
+           setShowPinPad(true);
         }
       });
 
@@ -194,19 +196,19 @@ export default function App() {
 
   const handleActionPinComplete = (pin: string) => {
     if (pin === CORRECT_PIN) {
-      const currentAlert = alerts[0];
-      if (socket && currentAlert) {
+      if (socket && pendingAlertId) {
         socket.emit('USER_ACTION', {
-           alertId: currentAlert.alert_id || currentAlert.id || `ALERT_${Date.now()}`,
+           alertId: pendingAlertId,
            action: pendingAction === 'BLOCK' ? 'BLOCKED' : 'VERIFIED'
         });
       }
       
       if (pendingAction === 'BLOCK') setIsCardBlocked(true);
       
-      setAlerts(prev => prev.slice(1));
+      setAlerts(prev => prev.filter(a => a.alert_id !== pendingAlertId && a.id !== pendingAlertId));
       setShowPinPad(false);
       setPendingAction(null);
+      setPendingAlertId(null);
     } else {
       setPinError(true);
     }
