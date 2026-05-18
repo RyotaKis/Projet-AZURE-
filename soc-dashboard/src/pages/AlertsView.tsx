@@ -34,29 +34,30 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
     if (!selectedAlert) return;
     setProcessing(true);
     
-    if (action === 'BLOCK' || action === 'REQUIRE_OTP') {
-       if (data.socket) {
-          data.socket.emit('SOC_ACTION', {
-             action: action,
-             alertId: selectedAlert.id,
-             userId: selectedAlert.user
-          });
-          toast.info(action === 'BLOCK' ? `Ordre de blocage envoyé. En attente du mobile...` : `Demande d'OTP envoyée. En attente du client...`);
-       }
-       // On NE RETIRE PAS l'alerte ici. On attend que le client valide sur son mobile !
-       setProcessing(false);
-    } else {
-       // Si c'est Ignorer, on traite localement
-       toast.success(`Alerte ${selectedAlert.id} marquée comme ignorée.`);
-       setTimeout(() => {
-          if (data.setAlerts) {
-             data.setAlerts(prev => prev.filter(a => a.id !== selectedAlert.id));
-          }
-          setProcessing(false);
-          setSelectedAlertId(null);
-          setInvestigationNotes('');
-       }, 1000);
+    if (data.socket) {
+        if (action === 'REQUIRE_OTP') {
+            data.socket.emit('SOC_ACTION', { action: 'REQUIRE_OTP', alertId: selectedAlert.id, userId: selectedAlert.user });
+            toast.info(`Demande d'OTP envoyée. En attente du client...`);
+            setProcessing(false);
+            return; // On ne retire pas l'alerte
+        } else if (action === 'BLOCK') {
+            data.socket.emit('SOC_ACTION', { action: 'ADMIN_BLOCK', alertId: selectedAlert.id, userId: selectedAlert.user });
+            toast.success(`La carte de l'utilisateur a été bloquée immédiatement.`);
+        } else if (action === 'IGNORE') {
+            data.socket.emit('SOC_ACTION', { action: 'ADMIN_VALIDATE', alertId: selectedAlert.id, userId: selectedAlert.user });
+            toast.success(`Alerte ignorée et transaction validée pour le client.`);
+        }
     }
+    
+    // Pour BLOCK et IGNORE, on retire l'alerte
+    setTimeout(() => {
+        if (data.setAlerts) {
+            data.setAlerts(prev => prev.filter(a => a.id !== selectedAlert.id));
+        }
+        setProcessing(false);
+        setSelectedAlertId(null);
+        setInvestigationNotes('');
+    }, 500);
   };
 
   return (

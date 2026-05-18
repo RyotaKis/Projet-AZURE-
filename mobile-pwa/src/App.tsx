@@ -132,6 +132,7 @@ export default function App() {
   
   const [isCardBlocked, setIsCardBlocked] = useState(false);
   const [toastAlert, setToastAlert] = useState<any>(null);
+  const [successMessage, setSuccessMessage] = useState<{title: string, message: string, type: 'success' | 'error'} | null>(null);
 
   useEffect(() => {
     // Demande de permission pour Web Push API
@@ -169,10 +170,19 @@ export default function App() {
       ioSocket.on('SOC_ACTION_BROADCAST', (data: any) => {
         // Pour la fluidité de la soutenance, la PWA réagit à toutes les actions SOC 
         // (Simulant que c'est le tel de l'utilisateur ciblé)
-        if (data.action === 'REQUIRE_OTP' || data.action === 'BLOCK') {
-           setPendingAction(data.action === 'BLOCK' ? 'BLOCK' : 'APPROVE');
+        if (data.action === 'REQUIRE_OTP') {
+           setPendingAction('APPROVE'); // OTP est pour valider la transaction
            setPendingAlertId(data.alertId);
            setShowPinPad(true);
+        } else if (data.action === 'ADMIN_BLOCK') {
+           setIsCardBlocked(true);
+           setAlerts(prev => prev.filter(a => a.alert_id !== data.alertId && a.id !== data.alertId));
+           setShowPinPad(false);
+           setSuccessMessage({ title: 'Sécurité AZUR+', message: 'Votre carte a été bloquée par votre banque suite à une activité suspecte.', type: 'error' });
+        } else if (data.action === 'ADMIN_VALIDATE') {
+           setAlerts(prev => prev.filter(a => a.alert_id !== data.alertId && a.id !== data.alertId));
+           setShowPinPad(false);
+           setSuccessMessage({ title: 'Transaction Validée', message: 'Votre banque a confirmé la sécurité de votre transaction.', type: 'success' });
         }
       });
 
@@ -189,6 +199,13 @@ export default function App() {
     }
   }, [toastAlert]);
 
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   const handleLoginComplete = (pin: string) => {
     if (pin === CORRECT_PIN) setIsLoggedIn(true);
     else setPinError(true);
@@ -203,7 +220,12 @@ export default function App() {
         });
       }
       
-      if (pendingAction === 'BLOCK') setIsCardBlocked(true);
+      if (pendingAction === 'BLOCK') {
+         setIsCardBlocked(true);
+         setSuccessMessage({ title: 'Carte Bloquée', message: 'Vous avez bloqué votre carte avec succès.', type: 'error' });
+      } else {
+         setSuccessMessage({ title: 'Identité Vérifiée', message: 'Transaction validée par OTP avec succès.', type: 'success' });
+      }
       
       setAlerts(prev => prev.filter(a => a.alert_id !== pendingAlertId && a.id !== pendingAlertId));
       setShowPinPad(false);
@@ -249,6 +271,26 @@ export default function App() {
               <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--danger)' }}>Activité Inhabituelle</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Analyse en cours...</div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🟢 MESSAGE DE SUCCES OVERLAY 🟢 */}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: 'rgba(255,255,255,0.95)', zIndex: 9999,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center'
+            }}
+          >
+            {successMessage.type === 'success' ? <CheckCircle size={64} color="#10b981" /> : <ShieldOff size={64} color="#ef4444" />}
+            <h2 style={{ color: 'var(--primary)', marginTop: '1rem' }}>{successMessage.title}</h2>
+            <p style={{ color: 'var(--text-secondary)' }}>{successMessage.message}</p>
           </motion.div>
         )}
       </AnimatePresence>
