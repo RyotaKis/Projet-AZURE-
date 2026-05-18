@@ -352,10 +352,10 @@ export default function App() {
               </div>
 
               <div className="alert-actions">
-                <button className="btn-cyber-safe" onClick={() => { setPendingAction('APPROVE'); setShowPinPad(true); }}>
+                <button className="btn-cyber-safe" onClick={() => { setPendingAction('APPROVE'); setPendingAlertId(activeAlert.alert_id || activeAlert.id); setShowPinPad(true); }}>
                   <CheckCircle size={20} /> Oui, c'est moi (Autoriser)
                 </button>
-                <button className="btn-cyber-danger" onClick={() => { setPendingAction('BLOCK'); setShowPinPad(true); }}>
+                <button className="btn-cyber-danger" onClick={() => { setPendingAction('BLOCK'); setPendingAlertId(activeAlert.alert_id || activeAlert.id); setShowPinPad(true); }}>
                   <Lock size={20} /> Non, Bloquer la carte
                 </button>
               </div>
