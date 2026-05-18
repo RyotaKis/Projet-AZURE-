@@ -10,7 +10,7 @@ import './App.css';
 
 const CORRECT_PIN = "1234";
 const TARGET_USER = "Sena Dossou";
-const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL || 'http://localhost:3000';
+const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL || 'https://azur-api-gateway.onrender.com';
 
 // --- Composant PIN PAD Sécurisé ---
 const PinPad = ({ onPinComplete, error, label }: { onPinComplete: (pin: string) => void, error: boolean, label: string }) => {

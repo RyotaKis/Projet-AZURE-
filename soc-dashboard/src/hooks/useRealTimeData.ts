@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { toast } from 'sonner';
 import type { Transaction, Alert, RiskLevel } from '../types';
 
-const GATEWAY_URL = import.meta.env.VITE_API_GATEWAY_URL || 'http://localhost:3000';
+const GATEWAY_URL = import.meta.env.VITE_API_GATEWAY_URL || 'https://azur-api-gateway.onrender.com';
 
 export function useRealTimeData() {
   const [socket, setSocket] = useState<Socket | null>(null);

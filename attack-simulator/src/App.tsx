@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import './App.css';
 
-const TRANSACTION_SERVICE_URL = import.meta.env.VITE_TRANSACTION_SERVICE_URL || 'http://localhost:4000';
+const TRANSACTION_SERVICE_URL = import.meta.env.VITE_TRANSACTION_SERVICE_URL || 'https://azur-transaction-service.onrender.com';
 
 const SCENARIOS = [
   {
