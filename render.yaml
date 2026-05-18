@@ -3,6 +3,7 @@ services:
   - type: web
     name: azur-api-gateway
     env: node
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run start:prod
     rootDir: api-gateway
@@ -14,6 +15,7 @@ services:
   - type: web
     name: azur-transaction-service
     env: node
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run start:prod
     rootDir: transaction-service
@@ -29,6 +31,7 @@ services:
   - type: web
     name: azur-fraud-engine
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     rootDir: fraud-engine
