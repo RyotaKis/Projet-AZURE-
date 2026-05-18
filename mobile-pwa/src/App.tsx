@@ -133,6 +133,11 @@ export default function App() {
   const [isCardBlocked, setIsCardBlocked] = useState(false);
   const [toastAlert, setToastAlert] = useState<any>(null);
   const [successMessage, setSuccessMessage] = useState<{title: string, message: string, type: 'success' | 'error'} | null>(null);
+  
+  const [liveTransactions, setLiveTransactions] = useState<any[]>([
+    { id: 'mock1', merchant: 'Netflix', type: 'Divertissement', amount: -15900, date: 'Hier', isSafe: true },
+    { id: 'mock2', merchant: 'Virement Salaire', type: 'Dépôt', amount: 285000, date: 'Le 05/05', isSafe: true }
+  ]);
 
   useEffect(() => {
     // Demande de permission pour Web Push API
@@ -146,12 +151,22 @@ export default function App() {
       
       ioSocket.on('connect', () => console.log('✅ Connecté au Gateway'));
       
+      ioSocket.on('TRANSACTION_FLOW', (tx: any) => {
+        if (tx.user === TARGET_USER || tx.user_id === TARGET_USER) {
+           setBalance(prev => prev - tx.amount);
+           setLiveTransactions(prev => [{
+               id: tx.transaction_id || Date.now(),
+               merchant: tx.merchant || 'Achat en ligne',
+               type: 'Paiement',
+               amount: -tx.amount,
+               date: "À l'instant",
+               isSafe: tx.fraud_score < 40
+           }, ...prev].slice(0, 10));
+        }
+      });
+      
       ioSocket.on('ALERT_NEW', (data: any) => {
         if (data.user === TARGET_USER || data.user_id === TARGET_USER) {
-          
-          // Simulation de mise à jour du solde si l'alerte est une transaction passée
-          setBalance(prev => prev - data.amount);
-
           // Niveau 1: Toast in-app
           setToastAlert(data);
           
@@ -417,24 +432,32 @@ export default function App() {
         <section className="transactions-section">
           <h3 className="section-title">Activité Récente</h3>
           <div className="tx-list">
-             {/* Transaction mockée */}
-             <div className="tx-item">
-               <div className="tx-icon-wrapper" style={{ background: '#fef2f2', color: '#ef4444' }}><Activity size={20} /></div>
-               <div className="tx-info">
-                 <div className="tx-merchant">Netflix <div className="shield-badge safe"><CheckCircle size={10}/></div></div>
-                 <div className="tx-meta">Hier • Divertissement</div>
-               </div>
-               <div className="tx-amount out">-15 900 FCFA</div>
-             </div>
-
-             <div className="tx-item">
-               <div className="tx-icon-wrapper" style={{ background: '#ecfdf5', color: '#10b981' }}><Zap size={20} /></div>
-               <div className="tx-info">
-                 <div className="tx-merchant">Virement Salaire <div className="shield-badge safe"><CheckCircle size={10}/></div></div>
-                 <div className="tx-meta">Le 05/05 • Dépôt</div>
-               </div>
-               <div className="tx-amount in">+285 000 FCFA</div>
-             </div>
+             <AnimatePresence>
+               {liveTransactions.map(tx => (
+                 <motion.div 
+                   key={tx.id}
+                   initial={{ opacity: 0, x: -20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   className="tx-item"
+                 >
+                   <div className="tx-icon-wrapper" style={{ background: tx.amount > 0 ? '#ecfdf5' : (tx.isSafe ? '#eff6ff' : '#fef2f2'), color: tx.amount > 0 ? '#10b981' : (tx.isSafe ? '#2563eb' : '#ef4444') }}>
+                     {tx.amount > 0 ? <Zap size={20} /> : <Activity size={20} />}
+                   </div>
+                   <div className="tx-info">
+                     <div className="tx-merchant">
+                       {tx.merchant} 
+                       <div className={`shield-badge ${tx.isSafe ? 'safe' : 'warn'}`}>
+                         {tx.isSafe ? <CheckCircle size={10}/> : <ShieldAlert size={10}/>}
+                       </div>
+                     </div>
+                     <div className="tx-meta">{tx.date} • {tx.type}</div>
+                   </div>
+                   <div className={`tx-amount ${tx.amount > 0 ? 'in' : 'out'}`}>
+                     {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString('fr-FR')} FCFA
+                   </div>
+                 </motion.div>
+               ))}
+             </AnimatePresence>
           </div>
         </section>
 
