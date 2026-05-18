@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Home, CreditCard, User, ShieldAlert, Lock, Fingerprint, 
-  LogOut, Wallet, CheckCircle, AlertTriangle, 
+  LogOut, Wallet, CheckCircle,  
   Bell, MapPin, Smartphone, Activity, Zap, ShieldCheck
 } from 'lucide-react';
 import { RadialBarChart, RadialBar, ResponsiveContainer, AreaChart, Area } from 'recharts';
@@ -87,7 +87,7 @@ const AIConfidenceGauge = ({ score }: { score: number }) => {
     <div className="ai-score-container">
       <ResponsiveContainer width="100%" height="100%">
         <RadialBarChart cx="50%" cy="50%" innerRadius="70%" outerRadius="100%" barSize={8} data={data} startAngle={90} endAngle={-270}>
-          <RadialBar background clockWise dataKey="value" cornerRadius={10} />
+          <RadialBar background dataKey="value" cornerRadius={10} />
         </RadialBarChart>
       </ResponsiveContainer>
       <div className={`ai-score-value ${score > 80 ? 'suspect' : ''}`}>{score}</div>
