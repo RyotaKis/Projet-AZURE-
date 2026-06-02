@@ -16,6 +16,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [investigationNotes, setInvestigationNotes] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [countdown, setCountdown] = useState<number>(0);
 
   const filteredAlerts = data.alerts.filter(a => 
     a.type.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -29,6 +30,36 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
       setSelectedAlertId(null);
     }
   }, [data.alerts, selectedAlertId]);
+
+  // Enforce user priority countdown: 10s delay after alert is triggered
+  React.useEffect(() => {
+    if (!selectedAlert) {
+      setCountdown(0);
+      return;
+    }
+
+    const calculateRemaining = () => {
+      const alertTime = new Date(selectedAlert.timestamp).getTime();
+      const elapsed = Date.now() - alertTime;
+      const remaining = Math.max(0, Math.ceil((10000 - elapsed) / 1000));
+      return remaining;
+    };
+
+    const initialRemaining = calculateRemaining();
+    setCountdown(initialRemaining);
+
+    if (initialRemaining <= 0) return;
+
+    const timer = setInterval(() => {
+      const rem = calculateRemaining();
+      setCountdown(rem);
+      if (rem <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [selectedAlert]);
 
   const handleAction = (action: string) => {
     if (!selectedAlert) return;
@@ -153,25 +184,35 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
               />
 
               <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Actions Requises</h3>
+              
+              {countdown > 0 && (
+                <div className="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs flex items-center gap-3 animate-pulse">
+                  <AlertTriangle className="w-5 h-5 flex-shrink-0 text-amber-500" />
+                  <div>
+                    <span className="font-bold">Priorité Client Active :</span> Attente de la validation OTP ou du signalement de l'utilisateur sur son application mobile. Le contrôle SOC sera déverrouillé dans <span className="font-mono font-bold text-sm bg-amber-500/20 px-2 py-0.5 rounded">{countdown}s</span>.
+                  </div>
+                </div>
+              )}
+
               <div className="flex gap-4">
                 <button 
-                  disabled={processing}
+                  disabled={processing || countdown > 0}
                   onClick={() => handleAction('BLOCK')}
-                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${processing ? 'opacity-50 cursor-not-allowed bg-slate-200 text-slate-500' : 'bg-rose-500/10 text-rose-500 border-rose-500/50 hover:bg-rose-500 hover:text-white'}`}
+                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${(processing || countdown > 0) ? 'opacity-40 cursor-not-allowed bg-slate-800/20 text-slate-500 border-slate-700/50' : 'bg-rose-500/10 text-rose-500 border-rose-500/50 hover:bg-rose-500 hover:text-white'}`}
                 >
                   <ShieldOff className="w-4 h-4" /> Bloquer Utilisateur
                 </button>
                 <button 
-                  disabled={processing}
+                  disabled={processing || countdown > 0}
                   onClick={() => handleAction('REQUIRE_OTP')}
-                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${processing ? 'opacity-50 cursor-not-allowed bg-slate-200 text-slate-500' : 'bg-blue-500/10 text-blue-500 border-blue-500/50 hover:bg-blue-500 hover:text-white'}`}
+                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${(processing || countdown > 0) ? 'opacity-40 cursor-not-allowed bg-slate-800/20 text-slate-500 border-slate-700/50' : 'bg-blue-500/10 text-blue-500 border-blue-500/50 hover:bg-blue-500 hover:text-white'}`}
                 >
                   <AlertTriangle className="w-4 h-4" /> Exiger OTP
                 </button>
                 <button 
-                  disabled={processing}
+                  disabled={processing || countdown > 0}
                   onClick={() => handleAction('IGNORE')}
-                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${processing ? 'opacity-50 cursor-not-allowed bg-slate-200 text-slate-500' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/50 hover:bg-emerald-500 hover:text-white'}`}
+                  className={`flex items-center gap-2 border transition-colors px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-wide ${(processing || countdown > 0) ? 'opacity-40 cursor-not-allowed bg-slate-800/20 text-slate-500 border-slate-700/50' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/50 hover:bg-emerald-500 hover:text-white'}`}
                 >
                   <CheckCircle className="w-4 h-4" /> Valider (Ignorer)
                 </button>
