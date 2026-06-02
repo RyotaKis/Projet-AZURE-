@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Home, CreditCard, User, ShieldAlert, Lock, Fingerprint, 
   LogOut, Wallet, CheckCircle,  
-  Bell, MapPin, Smartphone, Activity, Zap, ShieldCheck
+  Bell, MapPin, Smartphone, Activity, Zap, ShieldCheck, ShieldOff
 } from 'lucide-react';
 import { RadialBarChart, RadialBar, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import './App.css';
@@ -121,13 +121,15 @@ const ExpenseChart = () => {
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [pinError, setPinError] = useState(false);
-  const [balance, setBalance] = useState(4520.00);
+  const [balance, setBalance] = useState(4520000); // 4 520 000 FCFA for realistic simulation
   
   const [alerts, setAlerts] = useState<any[]>([]);
   const [socket, setSocket] = useState<any>(null);
   
   const [pendingAction, setPendingAction] = useState<'APPROVE' | 'BLOCK' | null>(null);
   const [pendingAlertId, setPendingAlertId] = useState<string | null>(null);
+  const [pendingTxId, setPendingTxId] = useState<string | null>(null);
+  const [pendingAmount, setPendingAmount] = useState<number>(0);
   const [showPinPad, setShowPinPad] = useState(false);
   
   const [isCardBlocked, setIsCardBlocked] = useState(false);
@@ -135,9 +137,14 @@ export default function App() {
   const [successMessage, setSuccessMessage] = useState<{title: string, message: string, type: 'success' | 'error'} | null>(null);
   
   const [liveTransactions, setLiveTransactions] = useState<any[]>([
-    { id: 'mock1', merchant: 'Netflix', type: 'Divertissement', amount: -15900, date: 'Hier', isSafe: true },
-    { id: 'mock2', merchant: 'Virement Salaire', type: 'Dépôt', amount: 285000, date: 'Le 05/05', isSafe: true }
+    { id: 'mock1', merchant: 'Netflix', type: 'Divertissement', amount: -15900, date: 'Hier', isSafe: true, status: 'Validée' },
+    { id: 'mock2', merchant: 'Virement Salaire', type: 'Dépôt', amount: 285000, date: 'Le 05/05', isSafe: true, status: 'Validée' }
   ]);
+
+  const alertsRef = useRef<any[]>([]);
+  useEffect(() => {
+    alertsRef.current = alerts;
+  }, [alerts]);
 
   useEffect(() => {
     // Demande de permission pour Web Push API
@@ -153,14 +160,21 @@ export default function App() {
       
       ioSocket.on('TRANSACTION_FLOW', (tx: any) => {
         if (tx.user === TARGET_USER || tx.user_id === TARGET_USER) {
-           setBalance(prev => prev - tx.amount);
+           const isSuspicious = tx.fraud_score >= 40;
+           
+           // Si la transaction n'est pas suspecte, on débite le solde immédiatement.
+           if (!isSuspicious) {
+              setBalance(prev => prev - tx.amount);
+           }
+           
            setLiveTransactions(prev => [{
-               id: tx.transaction_id || Date.now(),
-               merchant: tx.merchant || 'Achat en ligne',
+               id: tx.transaction_id || tx.resourceId || tx.id || `TX_${Date.now()}`,
+               merchant: tx.merchant || (isSuspicious ? 'Achat Suspect' : 'Achat en ligne'),
                type: 'Paiement',
                amount: -tx.amount,
                date: "À l'instant",
-               isSafe: tx.fraud_score < 40
+               isSafe: !isSuspicious,
+               status: tx.fraud_score >= 80 ? 'Bloquée (Auto)' : isSuspicious ? 'En cours d\'analyse' : 'Validée'
            }, ...prev].slice(0, 10));
         }
       });
@@ -183,21 +197,36 @@ export default function App() {
       });
       
       ioSocket.on('SOC_ACTION_BROADCAST', (data: any) => {
-        // Pour la fluidité de la soutenance, la PWA réagit à toutes les actions SOC 
-        // (Simulant que c'est le tel de l'utilisateur ciblé)
+        const matchingAlert = alertsRef.current.find(a => a.alert_id === data.alertId || a.id === data.alertId);
+        const txId = matchingAlert?.transaction_id || matchingAlert?.id;
+        const amount = matchingAlert?.amount || 0;
+
         if (data.action === 'REQUIRE_OTP') {
-           setPendingAction('APPROVE'); // OTP est pour valider la transaction
+           setPendingAction('APPROVE');
            setPendingAlertId(data.alertId);
+           setPendingTxId(txId || null);
+           setPendingAmount(amount);
            setShowPinPad(true);
         } else if (data.action === 'ADMIN_BLOCK') {
            setIsCardBlocked(true);
            setAlerts(prev => prev.filter(a => a.alert_id !== data.alertId && a.id !== data.alertId));
            setShowPinPad(false);
            setSuccessMessage({ title: 'Sécurité AZUR+', message: 'Votre carte a été bloquée par votre banque suite à une activité suspecte.', type: 'error' });
+           
+           if (txId) {
+             setLiveTransactions(prev => prev.map(t => t.id === txId ? { ...t, status: 'Bloquée', isSafe: false } : t));
+           }
         } else if (data.action === 'ADMIN_VALIDATE') {
            setAlerts(prev => prev.filter(a => a.alert_id !== data.alertId && a.id !== data.alertId));
            setShowPinPad(false);
            setSuccessMessage({ title: 'Transaction Validée', message: 'Votre banque a confirmé la sécurité de votre transaction.', type: 'success' });
+           
+           if (amount) {
+              setBalance(prev => prev - amount);
+           }
+           if (txId) {
+             setLiveTransactions(prev => prev.map(t => t.id === txId ? { ...t, status: 'Validée', isSafe: true } : t));
+           }
         }
       });
 
@@ -221,6 +250,19 @@ export default function App() {
     }
   }, [successMessage]);
 
+  // Sécurité bancaire : Déconnecter automatiquement l'utilisateur s'il quitte/minimise l'application
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        setIsLoggedIn(false);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   const handleLoginComplete = (pin: string) => {
     if (pin === CORRECT_PIN) setIsLoggedIn(true);
     else setPinError(true);
@@ -238,14 +280,27 @@ export default function App() {
       if (pendingAction === 'BLOCK') {
          setIsCardBlocked(true);
          setSuccessMessage({ title: 'Carte Bloquée', message: 'Vous avez bloqué votre carte avec succès.', type: 'error' });
+         
+         if (pendingTxId) {
+            setLiveTransactions(prev => prev.map(t => t.id === pendingTxId ? { ...t, status: 'Bloquée', isSafe: false } : t));
+         }
       } else {
          setSuccessMessage({ title: 'Identité Vérifiée', message: 'Transaction validée par OTP avec succès.', type: 'success' });
+         
+         if (pendingAmount) {
+            setBalance(prev => prev - pendingAmount);
+         }
+         if (pendingTxId) {
+            setLiveTransactions(prev => prev.map(t => t.id === pendingTxId ? { ...t, status: 'Validée', isSafe: true } : t));
+         }
       }
       
       setAlerts(prev => prev.filter(a => a.alert_id !== pendingAlertId && a.id !== pendingAlertId));
       setShowPinPad(false);
       setPendingAction(null);
       setPendingAlertId(null);
+      setPendingTxId(null);
+      setPendingAmount(0);
     } else {
       setPinError(true);
     }
@@ -450,7 +505,22 @@ export default function App() {
                          {tx.isSafe ? <CheckCircle size={10}/> : <ShieldAlert size={10}/>}
                        </div>
                      </div>
-                     <div className="tx-meta">{tx.date} • {tx.type}</div>
+                     <div className="tx-meta">
+                       {tx.date} • {tx.type}
+                       {tx.status && (
+                         <span style={{ 
+                           marginLeft: '8px', 
+                           padding: '2px 6px', 
+                           borderRadius: '4px', 
+                           fontSize: '9px', 
+                           fontWeight: 'bold',
+                           background: tx.status === 'Validée' ? '#ecfdf5' : tx.status === "En cours d'analyse" ? '#fef3c7' : '#fef2f2',
+                           color: tx.status === 'Validée' ? '#10b981' : tx.status === "En cours d'analyse" ? '#d97706' : '#ef4444'
+                         }}>
+                           {tx.status}
+                         </span>
+                       )}
+                     </div>
                    </div>
                    <div className={`tx-amount ${tx.amount > 0 ? 'in' : 'out'}`}>
                      {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString('fr-FR')} FCFA
