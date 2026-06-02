@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZUR+ — Note de Présentation & Démarche UML</title>
+  
+  <!-- SEO & Favicon Mockup -->
+  <meta name="description" content="Démarche de conception UML, choix technologiques et perspectives du projet AZUR+ de détection de fraude.">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- CSS DESIGN SYSTEM --- */
+    :root {
+      /* Dark Theme Tokens (Default) */
+      --bg-base: #070a13;
+      --bg-surface: #0e1326;
+      --bg-surface-hover: #161e38;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-focus: rgba(0, 82, 255, 0.4);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      
+      --color-primary: #0052FF;
+      --color-primary-glow: rgba(0, 82, 255, 0.15);
+      --color-accent: #0ea5e9;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+
+      --font-title: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      --text-scale: 1rem;
+    }
+
+    [data-theme="light"] {
+      /* Light Theme Tokens */
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-hover: #f1f5f9;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-color-focus: rgba(0, 82, 255, 0.3);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --color-primary-glow: rgba(0, 82, 255, 0.08);
+    }
+
+    /* --- BASE RESET --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-scale);
+      line-height: 1.7;
+      transition: background-color var(--transition-normal), color var(--transition-normal);
+      overflow-x: hidden;
+    }
+
+    /* --- SCROLLBAR --- */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* --- PROGRESS BAR --- */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* --- HEADER / NAVIGATION --- */
+    header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(7, 10, 19, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 900;
+      transition: background-color var(--transition-normal), border-color var(--transition-normal);
+    }
+    [data-theme="light"] header {
+      background-color: rgba(248, 250, 252, 0.8);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .brand span {
+      background: linear-gradient(135deg, #0052FF, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-tool {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-tool:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      max-width: 800px;
+      margin: 4rem auto 2rem;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--color-primary-glow);
+      border: 1px solid var(--border-color-focus);
+      color: var(--color-accent);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-family: var(--font-title);
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- MAIN CONTENT LAYOUT --- */
+    .container {
+      max-width: 800px;
+      margin: 0 auto 8rem;
+      padding: 0 2rem;
+    }
+
+    /* --- CARDS & PARAGRAPHS --- */
+    .slide-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      transition: all var(--transition-normal);
+      cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    .slide-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: 16px 0 0 16px;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .slide-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-color-focus);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
+    }
+
+    .slide-card:hover::before {
+      opacity: 1;
+    }
+
+    .slide-card.reading-active {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 20px var(--color-primary-glow);
+      background-color: var(--bg-surface-hover);
+    }
+    .slide-card.reading-active::before {
+      opacity: 1;
+    }
+
+    /* Card Badge */
+    .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+
+    .slide-card:nth-of-type(1) .card-badge { color: var(--color-accent); }
+    .slide-card:nth-of-type(2) .card-badge { color: var(--color-primary); }
+    .slide-card:nth-of-type(3) .card-badge { color: var(--color-warning); }
+    .slide-card:nth-of-type(4) .card-badge { color: var(--color-success); }
+    .slide-card:nth-of-type(5) .card-badge { color: var(--color-danger); }
+    .slide-card:nth-of-type(6) .card-badge { color: var(--text-primary); }
+
+    /* Heading Styling */
+    .slide-card h2 {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .slide-card h2 i {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .slide-card p {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      line-height: 1.75;
+      text-align: justify;
+    }
+
+    /* Actions inside Card */
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      opacity: 0;
+      transform: translateY(5px);
+      transition: all var(--transition-fast);
+    }
+
+    .slide-card:hover .card-actions,
+    .slide-card.reading-active .card-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-card {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color var(--transition-fast);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .btn-card:hover {
+      color: var(--text-primary);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Technology Badges */
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background-color: var(--color-primary-glow);
+      border: 1px solid var(--border-color-focus);
+      color: var(--text-primary);
+    }
+
+    /* --- FLOATING AUDIO MEDIA PLAYER --- */
+    .audio-player-panel {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: rgba(14, 19, 38, 0.95);
+      border: 1px solid var(--border-color-focus);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 82, 255, 0.2);
+      border-radius: 9999px;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      z-index: 950;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    [data-theme="light"] .audio-player-panel {
+      background-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 82, 255, 0.1);
+    }
+
+    .audio-player-panel.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .play-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-audio {
+      background-color: var(--color-primary);
+      border: none;
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(0, 82, 255, 0.4);
+      transition: all var(--transition-fast);
+    }
+
+    .btn-audio:hover {
+      transform: scale(1.08);
+      background-color: #1a65ff;
+    }
+
+    .btn-audio-secondary {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-audio-secondary:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+    }
+
+    .player-divider {
+      width: 1px;
+      height: 24px;
+      background-color: var(--border-color);
+    }
+
+    .player-info {
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 140px;
+    }
+
+    .player-settings {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .voice-select {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      max-width: 120px;
+    }
+
+    .speed-select {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .speed-select:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+    }
+
+    /* Accessibility Text Resizer Bar */
+    .text-resizer {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border-color);
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      background-color: var(--bg-surface);
+    }
+
+    .resizer-indicator {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .slide-card {
+        padding: 1.5rem;
+      }
+      .audio-player-panel {
+        width: 90%;
+        border-radius: 24px;
+        flex-wrap: wrap;
+        justify-content: center;
+        bottom: 1rem;
+        padding: 0.75rem;
+      }
+      .player-info {
+        text-align: center;
+        width: 100%;
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Indicator -->
+  <div id="progress-bar"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <i class="fa-solid fa-shield-halved"></i>
+        AZUR<span>+</span>
+      </a>
+      <div class="toolbar-actions">
+        <!-- Text Resizer -->
+        <div class="text-resizer">
+          <button class="btn-tool" style="width: 28px; height: 28px;" onclick="adjustFontSize(-1)" title="Diminuer le texte"><i class="fa-solid fa-minus"></i></button>
+          <span class="resizer-indicator" id="font-size-val">100%</span>
+          <button class="btn-tool" style="width: 28px; height: 28px;" onclick="adjustFontSize(1)" title="Agrandir le texte"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        
+        <!-- Audio Reader Toggle -->
+        <button class="btn-tool" id="btn-toggle-player" onclick="toggleAudioPanel()" title="Lecteur Audio (Synthèse vocale)">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="btn-tool" onclick="toggleTheme()" title="Changer le thème (Clair / Sombre)">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Header -->
+  <section class="hero">
+    <div class="hero-tag">
+      <i class="fa-solid fa-graduation-cap"></i> Note de Soutenance
+    </div>
+    <h1>Présentation d'AZUR+</h1>
+    <p>Guide d'oral structuré décrivant la méthodologie UML, les fondements techniques et la vision du projet.</p>
+  </section>
+
+  <!-- Main Document Container -->
+  <main class="container" id="cards-container">
+    
+    <!-- CARD 1: INTRODUCTION & UML -->
+    <article class="slide-card" data-index="0">
+      <div class="card-badge">
+        <i class="fa-solid fa-circle-info"></i> Section 1 • Introduction & UML
+      </div>
+      <h2><i class="fa-solid fa-compass text-sky-500"></i> Cadrage & Modélisation UML</h2>
+      <p>Pour concevoir AZUR+, nous avons utilisé l’UML afin de structurer les besoins, modéliser le fonctionnement du système et préparer son architecture avant le développement. Cette démarche nous a permis de garantir la cohérence du projet et de faciliter son évolution. Nous avons principalement réalisé trois diagrammes : le diagramme de cas d’utilisation, le diagramme d’activité et le diagramme de classes.</p>
+      
+      <div class="card-actions">
+        <button class="btn-card" onclick="copyText(0)"><i class="fa-regular fa-copy"></i> Copier</button>
+        <button class="btn-card" onclick="speakSingleCard(0)"><i class="fa-regular fa-circle-play"></i> Écouter</button>
+      </div>
+    </article>
+
+    <!-- CARD 2: USE CASE DIAGRAM -->
+    <article class="slide-card" data-index="1">
+      <div class="card-badge">
+        <i class="fa-solid fa-circle-dot"></i> Section 2 • Cas d'utilisation
+      </div>
+      <h2><i class="fa-solid fa-diagram-project text-blue-500"></i> Interactions & Cas d'Utilisation</h2>
+      <p>Ce diagramme de cas d’utilisation présente les principales interactions entre les acteurs du système AZUR+. On distingue le client, l’analyste SOC, le Core Banking System et le simulateur de tests. Le moteur de fraude analyse chaque transaction, puis selon le niveau de risque, la transaction est soit autorisée, soit soumise à une confirmation client, soit bloquée. L’analyste SOC intervient ensuite pour superviser les alertes et prendre les décisions nécessaires sur les comptes concernés.</p>
+      
+      <div class="card-actions">
+        <button class="btn-card" onclick="copyText(1)"><i class="fa-regular fa-copy"></i> Copier</button>
+        <button class="btn-card" onclick="speakSingleCard(1)"><i class="fa-regular fa-circle-play"></i> Écouter</button>
+      </div>
+    </article>
+
+    <!-- CARD 3: ACTIVITY DIAGRAM -->
+    <article class="slide-card" data-index="2">
+      <div class="card-badge">
+        <i class="fa-solid fa-chart-line"></i> Section 3 • Activité
+      </div>
+      <h2><i class="fa-solid fa-arrows-split-up-and-left text-amber-500"></i> Cinématique de Traitement d'Alerte</h2>
+      <p>Ce diagramme d’activité illustre le traitement d’une alerte de fraude par le système. L’analyste SOC sélectionne une alerte, puis AZUR+ lui fournit tous les éléments d’analyse, notamment le score de risque et les règles déclenchées. Après investigation, l’analyste décide soit de qualifier l’alerte comme faux positif, soit de confirmer la fraude. En fonction de cette décision, le système met à jour l’alerte et transmet les actions nécessaires au Core Banking System, comme l’autorisation de la transaction ou le gel du compte concerné.</p>
+      
+      <div class="card-actions">
+        <button class="btn-card" onclick="copyText(2)"><i class="fa-regular fa-copy"></i> Copier</button>
+        <button class="btn-card" onclick="speakSingleCard(2)"><i class="fa-regular fa-circle-play"></i> Écouter</button>
+      </div>
+    </article>
+
+    <!-- CARD 4: CLASS DIAGRAM -->
+    <article class="slide-card" data-index="3">
+      <div class="card-badge">
+        <i class="fa-solid fa-database"></i> Section 4 • Structure des Données
+      </div>
+      <h2><i class="fa-solid fa-network-wired text-emerald-500"></i> Structure des Classes & Entités</h2>
+      <p>Ce diagramme présente les principales entités d’AZUR+. Un utilisateur possède un ou plusieurs comptes et appareils de confiance. Les transactions effectuées sont analysées par le système et peuvent déclencher des alertes de fraude. Ces alertes sont ensuite examinées par les analystes SOC afin de confirmer une fraude ou de la classer comme faux positif. L’ensemble garantit une surveillance et une traçabilité complètes des opérations bancaires.</p>
+      
+      <div class="card-actions">
+        <button class="btn-card" onclick="copyText(3)"><i class="fa-regular fa-copy"></i> Copier</button>
+        <button class="btn-card" onclick="speakSingleCard(3)"><i class="fa-regular fa-circle-play"></i> Écouter</button>
+      </div>
+    </article>
+
+    <!-- CARD 5: TECHNOLOGY CHOICE -->
+    <article class="slide-card" data-index="4">
+      <div class="card-badge">
+        <i class="fa-solid fa-microchip"></i> Section 5 • Choix Technologiques
+      </div>
+      <h2><i class="fa-solid fa-gears text-rose-500"></i> Architecture Logicielle & Sécurité</h2>
+      <div class="tech-tags">
+        <span class="tech-tag">NestJS</span>
+        <span class="tech-tag">TypeScript</span>
+        <span class="tech-tag">Python</span>
+        <span class="tech-tag">FastAPI</span>
+        <span class="tech-tag">React</span>
+        <span class="tech-tag">Tailwind CSS</span>
+        <span class="tech-tag">Socket.IO</span>
+        <span class="tech-tag">PostgreSQL</span>
+      </div>
+      <p>Concernant les choix technologiques, nous avons utilisé NestJS et TypeScript pour le backend, Python et FastAPI pour le moteur d'intelligence artificielle, React et Tailwind CSS pour les interfaces utilisateur, Socket.IO pour les communications en temps réel, PostgreSQL pour la persistance des données. La sécurité repose sur l'authentification des utilisateurs, le contrôle des accès, la journalisation des actions sensibles et la sécurisation des communications entre les services afin de limiter les risques d'accès non autorisés et de compromission du système.</p>
+      
+      <div class="card-actions">
+        <button class="btn-card" onclick="copyText(4)"><i class="fa-regular fa-copy"></i> Copier</button>
+        <button class="btn-card" onclick="speakSingleCard(4)"><i class="fa-regular fa-circle-play"></i> Écouter</button>
+      </div>
+    </article>
+
+    <!-- CARD 6: CONCLUSION & PERSPECTIVES -->
+    <article class="slide-card" data-index="5">
+      <div class="card-badge">
+        <i class="fa-solid fa-flag-checkered"></i> Section 6 • Conclusion
+      </div>
+      <h2><i class="fa-solid fa-lightbulb text-slate-400"></i> Conclusion & Perspectives</h2>
+      <p>Pour conclure, AZUR+ nous a permis de concevoir une plateforme de détection de fraude bancaire combinant supervision temps réel, intelligence artificielle et interaction utilisateur. Ce projet démontre l'apport des architectures modernes dans la sécurisation des transactions financières. À l'avenir, nous envisageons d'améliorer le déploiement distribué, les modèles de Machine Learning, les mécanismes d'authentification et les capacités analytiques du système.</p>
+      
+      <div class="card-actions">
+        <button class="btn-card" onclick="copyText(5)"><i class="fa-regular fa-copy"></i> Copier</button>
+        <button class="btn-card" onclick="speakSingleCard(5)"><i class="fa-regular fa-circle-play"></i> Écouter</button>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- --- AUDIO READER PANEL (TTS) --- -->
+  <div class="audio-player-panel" id="audio-panel">
+    <div class="player-info" id="player-status">Lecteur inactif</div>
+    
+    <div class="play-controls">
+      <button class="btn-audio" id="btn-play-pause" onclick="handlePlayPause()" title="Play / Pause">
+        <i class="fa-solid fa-play"></i>
+      </button>
+      <button class="btn-audio-secondary" onclick="handleStop()" title="Arrêter">
+        <i class="fa-solid fa-square"></i>
+      </button>
+    </div>
+    
+    <div class="player-divider"></div>
+    
+    <div class="player-settings">
+      <!-- Voice selector -->
+      <select class="voice-select" id="voice-select" onchange="changeVoice()" title="Sélectionner la voix"></select>
+      
+      <!-- Speech speed toggle -->
+      <button class="speed-select" id="btn-speed" onclick="toggleSpeed()" title="Vitesse de lecture">1.0x</button>
+    </div>
+  </div>
+
+  <script>
+    // --- ACCESSIBILITY FUNCTIONS ---
+    let fontScale = 100;
+    function adjustFontSize(val) {
+      fontScale = Math.min(130, Math.max(80, fontScale + val * 10));
+      document.getElementById('font-size-val').innerText = fontScale + "%";
+      document.documentElement.style.setProperty('--text-scale', (fontScale / 100) + 'rem');
+    }
+
+    // --- THEME MANAGEMENT ---
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      
+      const themeIcon = document.getElementById('theme-icon');
+      if (newTheme === 'light') {
+        themeIcon.className = 'fa-solid fa-sun';
+      } else {
+        themeIcon.className = 'fa-solid fa-moon';
+      }
+    }
+
+    // --- READING PROGRESS INDICATOR ---
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    // --- TEXT COPY UTILITY ---
+    function copyText(index) {
+      const text = document.querySelector(`article[data-index="${index}"] p`).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        toastNotification("Texte copié dans le presse-papiers !");
+      }).catch(err => {
+        console.error('Erreur lors de la copie: ', err);
+      });
+    }
+
+    function toastNotification(message) {
+      // Simple built-in visual toast using Web API
+      if (typeof window.toast !== 'undefined') {
+        // if React toast/sonner was somehow integrated
+      } else {
+        const toast = document.createElement('div');
+        toast.innerText = message;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '8rem';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = 'rgba(16, 185, 129, 0.9)';
+        toast.style.color = '#fff';
+        toast.style.padding = '0.75rem 1.5rem';
+        toast.style.borderRadius = '8px';
+        toast.style.fontSize = '0.9rem';
+        toast.style.fontWeight = 'bold';
+        toast.style.zIndex = '9999';
+        toast.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.3)';
+        toast.style.pointerEvents = 'none';
+        toast.style.transition = 'opacity 0.3s ease';
+        
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 300);
+        }, 2000);
+      }
+    }
+
+    // --- TEXT TO SPEECH (TTS) CONTROLLER ---
+    const synth = window.speechSynthesis;
+    let voices = [];
+    let currentParagraphIndex = -1;
+    let selectedVoice = null;
+    let speechRate = 1.0;
+    let currentUtterance = null;
+    let isPlaying = false;
+    let isPaused = false;
+
+    // Load available Speech voices
+    function populateVoiceList() {
+      voices = synth.getVoices();
+      const select = document.getElementById('voice-select');
+      select.innerHTML = '';
+      
+      // Filter for French voices primarily
+      const frenchVoices = voices.filter(voice => voice.lang.includes('fr'));
+      const displayVoices = frenchVoices.length > 0 ? frenchVoices : voices;
+
+      displayVoices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = voice.name;
+        if (voice.default || voice.name.includes('Google') || i === 0) {
+          option.selected = true;
+          selectedVoice = voice;
+        }
+        select.appendChild(option);
+      });
+    }
+
+    populateVoiceList();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+
+    function changeVoice() {
+      const select = document.getElementById('voice-select');
+      selectedVoice = voices.find(v => v.name === select.value);
+      if (isPlaying) {
+        // restart speech with new voice
+        const prevIndex = currentParagraphIndex;
+        handleStop();
+        speakParagraph(prevIndex);
+      }
+    }
+
+    function toggleSpeed() {
+      const rates = [1.0, 1.2, 1.4, 0.8];
+      let currIdx = rates.indexOf(speechRate);
+      speechRate = rates[(currIdx + 1) % rates.length];
+      document.getElementById('btn-speed').innerText = speechRate.toFixed(1) + "x";
+      if (isPlaying) {
+        const prevIndex = currentParagraphIndex;
+        // Resume from current paragraph with new speed
+        const elapsed = synth.speaking;
+        handleStop();
+        speakParagraph(prevIndex);
+      }
+    }
+
+    function toggleAudioPanel() {
+      const panel = document.getElementById('audio-panel');
+      panel.classList.toggle('visible');
+      if (panel.classList.contains('visible') && currentParagraphIndex === -1) {
+        setPlayerStatus("Prêt pour la lecture");
+      }
+    }
+
+    function setPlayerStatus(text) {
+      document.getElementById('player-status').innerText = text;
+    }
+
+    function highlightCard(index) {
+      document.querySelectorAll('.slide-card').forEach((card, idx) => {
+        if (idx === index) {
+          card.classList.add('reading-active');
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          card.classList.remove('reading-active');
+        }
+      });
+    }
+
+    function speakParagraph(index) {
+      if (index < 0 || index >= 6) {
+        handleStop();
+        return;
+      }
+      
+      currentParagraphIndex = index;
+      highlightCard(index);
+      setPlayerStatus(`Section ${index + 1} en cours...`);
+      isPlaying = true;
+      isPaused = false;
+      document.getElementById('btn-play-pause').innerHTML = '<i class="fa-solid fa-pause"></i>';
+      
+      const text = document.querySelector(`article[data-index="${index}"] p`).innerText;
+      currentUtterance = new SpeechSynthesisUtterance(text);
+      
+      if (selectedVoice) currentUtterance.voice = selectedVoice;
+      currentUtterance.rate = speechRate;
+      
+      currentUtterance.onend = () => {
+        // Automatically speak next paragraph
+        if (isPlaying && currentParagraphIndex === index) {
+          speakParagraph(index + 1);
+        }
+      };
+      
+      currentUtterance.onerror = (e) => {
+        console.error("Speech error", e);
+        if (isPlaying) {
+          handleStop();
+        }
+      };
+
+      synth.speak(currentUtterance);
+    }
+
+    function speakSingleCard(index) {
+      const panel = document.getElementById('audio-panel');
+      if (!panel.classList.contains('visible')) {
+        panel.classList.add('visible');
+      }
+      synth.cancel();
+      speakParagraph(index);
+    }
+
+    function handlePlayPause() {
+      if (!isPlaying) {
+        speakParagraph(currentParagraphIndex === -1 ? 0 : currentParagraphIndex);
+      } else {
+        if (synth.speaking && !isPaused) {
+          synth.pause();
+          isPaused = true;
+          document.getElementById('btn-play-pause').innerHTML = '<i class="fa-solid fa-play"></i>';
+          setPlayerStatus("Lecture en pause");
+        } else if (isPaused) {
+          synth.resume();
+          isPaused = false;
+          isPlaying = true;
+          document.getElementById('btn-play-pause').innerHTML = '<i class="fa-solid fa-pause"></i>';
+          setPlayerStatus(`Section ${currentParagraphIndex + 1} en cours...`);
+        }
+      }
+    }
+
+    function handleStop() {
+      synth.cancel();
+      isPlaying = false;
+      isPaused = false;
+      document.getElementById('btn-play-pause').innerHTML = '<i class="fa-solid fa-play"></i>';
+      setPlayerStatus("Lecture arrêtée");
+      
+      document.querySelectorAll('.slide-card').forEach(card => {
+        card.classList.remove('reading-active');
+      });
+    }
+  </script>
+</body>
+</html>
