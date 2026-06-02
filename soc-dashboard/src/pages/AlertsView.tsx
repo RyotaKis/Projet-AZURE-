@@ -31,7 +31,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
     }
   }, [data.alerts, selectedAlertId]);
 
-  // Enforce user priority countdown: 10s delay after alert is triggered
+  // Enforce user priority countdown: 15s delay after alert is triggered
   React.useEffect(() => {
     if (!selectedAlert) {
       setCountdown(0);
@@ -41,7 +41,7 @@ export const AlertsView: React.FC<AlertsViewProps> = ({ data }) => {
     const calculateRemaining = () => {
       const alertTime = new Date(selectedAlert.timestamp).getTime();
       const elapsed = Date.now() - alertTime;
-      const remaining = Math.max(0, Math.ceil((10000 - elapsed) / 1000));
+      const remaining = Math.max(0, Math.ceil((15000 - elapsed) / 1000));
       return remaining;
     };
 
