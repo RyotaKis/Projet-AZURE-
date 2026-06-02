@@ -162,10 +162,13 @@ export default function App() {
         if (tx.user === TARGET_USER || tx.user_id === TARGET_USER) {
            const isSuspicious = tx.fraud_score >= 40;
            
-           // Si la transaction n'est pas suspecte, on débite le solde immédiatement.
-           if (!isSuspicious) {
-              setBalance(prev => prev - tx.amount);
-           }
+            // Si la transaction n'est pas suspecte, on débite le solde immédiatement.
+            if (!isSuspicious) {
+               const amt = Number(tx.amount);
+               if (!isNaN(amt)) {
+                  setBalance(prev => prev - amt);
+               }
+            }
            
            setLiveTransactions(prev => [{
                id: tx.transaction_id || tx.resourceId || tx.id || `TX_${Date.now()}`,
@@ -407,10 +410,22 @@ export default function App() {
               </div>
 
               <div className="alert-actions">
-                <button className="btn-cyber-safe" onClick={() => { setPendingAction('APPROVE'); setPendingAlertId(activeAlert.alert_id || activeAlert.id); setShowPinPad(true); }}>
+                <button className="btn-cyber-safe" onClick={() => { 
+                  setPendingAction('APPROVE'); 
+                  setPendingAlertId(activeAlert.alert_id || activeAlert.id); 
+                  setPendingTxId(activeAlert.transaction_id || activeAlert.id);
+                  setPendingAmount(Number(activeAlert.amount) || 0);
+                  setShowPinPad(true); 
+                }}>
                   <CheckCircle size={20} /> Oui, c'est moi (Autoriser)
                 </button>
-                <button className="btn-cyber-danger" onClick={() => { setPendingAction('BLOCK'); setPendingAlertId(activeAlert.alert_id || activeAlert.id); setShowPinPad(true); }}>
+                <button className="btn-cyber-danger" onClick={() => { 
+                  setPendingAction('BLOCK'); 
+                  setPendingAlertId(activeAlert.alert_id || activeAlert.id); 
+                  setPendingTxId(activeAlert.transaction_id || activeAlert.id);
+                  setPendingAmount(Number(activeAlert.amount) || 0);
+                  setShowPinPad(true); 
+                }}>
                   <Lock size={20} /> Non, Bloquer la carte
                 </button>
               </div>
