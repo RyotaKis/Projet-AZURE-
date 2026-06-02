@@ -5,7 +5,7 @@ import type { Transaction, Alert, RiskLevel } from '../types';
 
 const GATEWAY_URL = import.meta.env.VITE_API_GATEWAY_URL || 'https://azur-api-gateway.onrender.com';
 
-export function useRealTimeData() {
+export function useRealTimeData(active: boolean) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -18,7 +18,12 @@ export function useRealTimeData() {
   });
 
   useEffect(() => {
-    const newSocket = io(GATEWAY_URL);
+    if (!active) return;
+
+    const newSocket = io(GATEWAY_URL, {
+      transports: ['websocket'],
+      upgrade: false
+    });
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
@@ -85,13 +90,13 @@ export function useRealTimeData() {
        }
        setAlerts(prev => prev.filter(a => a.id !== data.alertId));
        setStats(prev => ({ ...prev, activeAlerts: Math.max(0, prev.activeAlerts - 1) }));
-    });
+     });
 
     return () => {
       clearInterval(pingInterval);
       newSocket.close();
     };
-  }, []);
+  }, [active]);
 
   return { transactions, alerts, stats, socket, setAlerts, setStats };
 }

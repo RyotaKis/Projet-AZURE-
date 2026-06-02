@@ -15,8 +15,8 @@ import { SettingsView } from './pages/SettingsView';
 import { LoginView } from './pages/LoginView';
 
 export default function App() {
-  const data = useRealTimeData();
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const data = useRealTimeData(isAuthenticated);
 
   if (!isAuthenticated) {
     return (
