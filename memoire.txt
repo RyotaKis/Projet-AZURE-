@@ -1,0 +1,895 @@
+REPUBLIQUE DU BENIN ******* MINISTERE DE L’ENSEIGNEMENT SUPERIEUR ET DE LA RECHERCHE SCIENTIFIQUE ******* DIRECTION GÉNÉRALE DE L’ENSEIGNEMENT SUPÉRIEUR ******* INSTITUT UNIVERSITAIRE LES COURS SONOU
+
+PARAKOU ******* RAPPORT DE FIN DE FORMATION POUR L’OBTENTION DES CREDITS ASSOCIES AU DIPLOME DE LICENCE PROFESSIONNELLE THEME  :
+
+Conception et REALISATION D’UN SYSTEME INTEGRE DE DETECTION DE FRAUDE BANCAIRE EN TEMPS REEL (AZUR+) THEME  :
+
+Conception et REALISATION D’UN SYSTEME INTEGRE DE DETECTION DE FRAUDE BANCAIRE EN TEMPS REEL (AZUR+)
+
+Option  : Sciences et Techniques Filière  :
+
+Système Informatique et Logiciel
+
+Réalisé par  : Daril Gaïus Asséréou ARALE & Charbel Ibukun Phanel DIMON Sous la supervision de  : MAÎTRE DE STAGE   : DIRECTEUR DE MEMOIRE  : Mr Maxime HOUNTONDJI Mr Cyprien J.-Claude C.
+D.
+HOUNSA (Ingénieur en Informatique) Ingénieur des Systèmes Téléinformatiques  et Réseaux – Architecte Logiciel Année académique : 2025-2026 Année académique : 2025-2026
+
+L’INSTITUT UNIVERSITAIRE LES COURS SONOU n’entend donner aucune approbation ni improbation aux opinions émises dans ce mémoire.
+Ces opinions doivent être considérées comme propres à leurs auteurs.
+L’INSTITUT UNIVERSITAIRE LES COURS SONOU n’entend donner aucune approbation ni improbation aux opinions émises dans ce mémoire.
+Ces opinions doivent être considérées comme propres à leurs auteurs.
+DEDICACES
+ 
+
+DEDICACES
+ Dédicace 1 Dédicace 1 À m on P ère, ARALE Paul. m a M ère, GAZARD Florida.
+ARALE Daril G.
+A.
+Dédicace 2 Dédicace 2 À m on P ère, DIMON Stéphane m a M ère, HOUNTONDJI Marcelle DIMON C.
+I.
+Phanel 
+
+REMERCIEMENTS
+ 
+
+REMERCIEMENTS
+ En cette fin de stage et à l’achèvement de ce travail, nous tenons tout d’abord à remercier Dieu le tout puissant, qui nous a accordé la santé et le courage pour accomplir ce travail.
+Nous tenons à faire part de notre profonde reconnaissance à : Monsieur Fabrice SONOU , Promoteur de l’Institut Universitaire ‶LES COURS SONOU″ (LCS) ; Monsieur Cyprien Jean-Claude C.
+D.
+HOUNSA pour sa disponibilité et son apport de qualité pour la réalisation de ce rapport ; Monsieur Marcel DOSSA ,
+
+Directeur des Etudes ( DE ) du site de Parakou de l’Institut Universitaire ‶LES COURS SONOU″ , pour tous ses conseils et son accompagnement dans le travail.
+Monsieur Maxime HOUNTONDJI , le Directeur Général de Wirepick Sarl et notre M aître de stage pour son entière participation dans la réalisation de ce projet, ses conseils, sa disponibilité et ses encouragements qui nous ont permis de réaliser ce travail dans les meilleures conditions ; Monsieur Samuel ZANNOU , pour son apport dans la réalisation de ce projet ; Tout le corps professoral de l’Institut Universitaire ‘’LES COURS SONOU’’ en général et le personnel administratif pour notre formation générale ; Tous les membres de jury pour l’honneur que vous nous faites en acceptant, en dépit de vos lourdes responsabilités, de siéger pour juger ce travail qui doit être perçu comme résultat du fruit de nos recherches ; Les parents qui s’efforcent tous les jours pour nous assurer une formation de qualité A toutes les familles ARALE et DIMON et à toutes les personnes qui ont contribués de près ou de loin au bon déroulement de notre formation que nous n’avons pas pu citer, à tous nos camarades de classe nous présentons nos remerciements, notre respect et notre gratitude.
+Tous ceux qui, de près ou de loin, ont apporté leurs contributions à la réalisation de ce travail.
+Ce mémoire met en lumière la conception d'AZUR+, une plateforme informatique anti-fraude visant la supervision bancaire temps-réel.
+La recrudescence des cas de tromperies en ligne entrave le dynamisme du monde de la monnaie électronique.
+La présente thèse expose le développement applicatif visant à diagnostiquer informatiquement les écarts comportementaux en couplant aux serveurs (Node.js et base relationnelle PostgreSQL), une approche pointue via l'Intelligence Artificielle de Machine Learning supervisé.
+Une interface de gestion web permet la visualisation et d'autre part, le mobile vient relayer au client final la vérification synchrone, procurant ainsi une sécurité novatrice.
+Mots-clés : AZUR+, détection de fraude, supervision bancaire temps-réel, monnaie électronique, intelligence artificielle, apprentissage automatique supervisé, vérification synchrone.
+This thesis highlights the design of AZUR+, an anti-fraud computing platform aimed at real-time banking supervision.
+The resurgence of online deception cases hinders the dynamism of the electronic money world.
+This dissertation outlines the application development aimed at computationally diagnosing behavioral anomalies by combining servers (Node.js and PostgreSQL relational database) with a cutting-edge Artificial Intelligence approach via supervised Machine Learning.
+A web management interface enables visualization, while a mobile application relays synchronous verification to the end customer, thereby providing innovative security.
+Keywords : AZUR+, fraud detection, real-time banking supervision, electronic money, artificial intelligence, supervised machine learning, synchronous verification.
+INTRODUCTION
+..................................................................................................................3 
+
+CHAPITRE 1
+ : PRÉSENTATION DU CADRE D’ETUDE DU SUJET.........................5
+
+I.
+PRÉSENTATION DE LA STRUCTURE D'ACCUEIL...............................................6 1.
+Historique de WIREPICK......................................................................................6 2.
+Situation géographique............................................................................................6 3.
+Objectifs..................................................................................................................6 4.
+Fonctionnement de la structure...............................................................................7
+
+4.1.
+Structure organisationnelle...............................................................................7
+
+4.2.
+Collaboration entre services ............................................................................8
+
+4.3 Activités socio-économiques ............................................................................8
+
+4.4 Résultats de la pratique......................................................................................9
+
+4.4.1 Ressources matérielles................................................................................9
+
+4.4.2 Ressources logicielles.................................................................................9
+
+II - DÉROULEMENT DU STAGE..................................................................................10 1 - Objectifs du stage...................................................................................................10 2 - Activités effectuées.................................................................................................10 3 - Difficultés rencontrées ...........................................................................................10 
+
+CHAPITRE 2
+ : ANALYSE ET CONCEPTION DU NOUVEAU PROJET .....................12
+
+
+
+I – Problématique
+..............................................................................................................13
+
+
+
+II - Étude et critique
+ de l’existant.....................................................................................13
+
+
+
+III - Approche de solution
+.................................................................................................14
+
+
+
+IV – Objectifs
+....................................................................................................................15
+
+
+
+V - Limites du projet
+..........................................................................................................15 
+
+CHAPITRE 3
+ : ANALYSE ET CONCEPTION DU NOUVEAU SYSTÈME ..................17
+
+
+
+I – Méthodologie
+................................................................................................................23 
+
+A - Présentation du langage
+ UML.................................................................................23 
+
+B - Choix de l’outil
+ d’analyse........................................................................................23
+
+
+
+II - Présentation des diagrammes
+ comportementaux et d’interaction .................................23 
+
+A - Présentation des diagrammes
+ comportementaux......................................................23 
+
+1 - Diagramme de cas
+ d’utilisation.....................................................................24 
+
+2 - Diagramme d’activités
+...................................................................................31 
+
+B - Présentation des diagrammes d’interaction
+...............................................................33 
+
+C - Présentation des diagrammes structurels
+.....................................................................34 
+
+1 - Diagramme de classes
+......................................................................................35
+
+
+
+III - Règles de domaine
+..........................................................................................................36 
+
+CHAPITRE 4
+ : CONCEPTION DU SYSTÈME......................................................................38
+
+
+
+I - Présentation des outils
+ de développement.........................................................................39 
+
+A - Les technologies
+...........................................................................................................39 1 - Langages utilisés...............................................................................................39 2 - Frameworks et bibliothèques............................................................................41 
+
+B - Les environnements
+.....................................................................................................41
+
+
+
+II - Implémentation de la base
+ de données..............................................................................43 
+
+A - Schéma logique
+ et relationnel.......................................................................................43 
+
+B - Dictionnaire de données
+................................................................................................44
+
+
+
+III - Le Module d'Intelligence Artificielle (Machine Learning)...........................50
+
+IV.
+Présentation de l'application
+...............................................................................................54 
+
+CONCLUSION
+...............................................................................................................................63 API :  Application Programming Interface  (Interface de Programmation d'Application) CBS :  Core Banking System  (Système Bancaire Central) CEO :  Chief Executive Officer  (Directeur Général) CTO :  Chief Technology Officer  (Directeur Technique) FCM :  Firebase Cloud Messaging IA :  Intelligence Artificielle IDE :  Integrated Development Environment  (Environnement de Développement Intégré) I/O :  Input/Output  (Entrées/Sorties) JSON :  JavaScript Object Notation JWT :  JSON Web Token KYC :  Know Your Customer  (Processus de connaissance du client) ML :  Machine Learning  (Apprentissage Automatique) MLOps :  Machine Learning Operations  (Opérations d'Apprentissage Automatique) OTP :  One-Time Password  (Mot de passe à usage unique) PCI-DSS :  Payment Card Industry Data Security Standard  (Standard de sécurité des données pour l'industrie des cartes de paiement) SaaS :  Software as a Service  (Logiciel en tant que Service) SIM :  Subscriber Identity Module  (Module d'Identité d'Abonné, en référence au SIM Swapping) SMS :  Short Message Service SOC :  Security Operations Center  (Centre des Opérations de Sécurité) SQL :  Structured Query Language  (Langage de Requête Structurée) UI :  User Interface  (Interface Utilisateur) UML :  Unified Modeling Language  (Langage de Modélisation Unifié) USSD :  Unstructured Supplementary Service Data  (Données de Services Supplémentaires Non Structurées) UX :  User Experience  (Expérience Utilisateur) 
+
+Tableau 1
+  : Tableau détaillé des ressources matérielles de WIREPICK SARL……..............................................................................................................................13 
+
+Tableau 2
+  : Tableau détaillé des ressources logicielles de WIREPICK SARL ……........................................................................................................................................14 
+
+Tableau 3
+ : Tableau détaillé des ressources réseau et infrastructure de WIREPICK SARL ……........................................................................................................................................15 
+
+Tableau 4
+  : Dictionnaire des données ……...........................................................................53 
+
+Figure 1
+ : Situation géographique de Wirepick ……............................................ . 7 
+
+Figure 2
+ : Organigramme de la hiérarchie de Wirepick ……................................10 
+
+Figure 3
+ : Diagramme de contexte statique ……...................................................26 
+
+Figure 4
+ : Diagramme de cas d’utilisation …….....................................................29 
+
+Figure 5
+ : Diagramme d’activité du cas « traiter alerte côté analyste SOC » ……31 
+
+Figure 6
+ : Diagramme d’activité du cas « traitement d’alerte côté client » ……...33 
+
+Figure 7
+ : Diagramme de séquence du cas « gel de compte par l’analyste »…… .. 34 
+
+Figure 8
+ : Diagramme de classe …….................................................................... . 35 
+
+Figure 9
+ : Logo de l’application …….................................................................... . 54 
+
+Figure 1
+0 : Interface de connexion ……................................................................ . 55 
+
+Figure 1
+1 : Dashboard (vue d’ensemble) ……....................................................... . 58 
+
+Figure 1
+2 : Interface de triage des alertes de fraude ……...................................... . 59 
+
+Figure 1
+3 : Interface de simulation des transactions …........................................ . ..60 
+
+INTRODUCTION
+ 
+
+INTRODUCTION
+ Dans un monde où la digitalisation transforme tous les secteurs d'activité, la sécurité des flux financiers est devenue un enjeu stratégique pour toute institution bancaire.
+L'intégration de la technologie est une nécessité incontournable pour optimiser les services et protéger les avoirs des utilisateurs.
+Cependant, avec l'avènement du mobile money et des paiements en ligne rapides, la fraude bancaire s'est sophistiquée, entraînant des pertes financières colossales à travers le monde et particulièrement en Afrique subsaharienne.
+Face à ces défis majeurs, la gestion manuelle ou réactive de la fraude n'est plus suffisante.
+L'analyse post-transactionnelle entraîne des retards dans le traitement des incidents, une mauvaise perception de la sécurité par la clientèle et des pertes irrémédiables pour les institutions.
+Dans ce document, qui constitue l'aboutissement de nos travaux de fin de cycle, nous proposons la mise en place du projet AZUR+, une solution logicielle innovante et efficace de détection de fraude en temps réel.
+Dans un premier temps, nous présenterons le cadre institutionnel de l'étude à travers la présentation de notre structure de stage WIREPICK SARL.
+Ensuite, nous exposerons la problématique et le cadre théorique du projet.
+Enfin, nous détaillerons les différentes étapes de la modélisation et de la réalisation informatique de notre système.
+CHAPITRE 1
+ : PRÉSENTATION DU CADRE D’ETUDE
+
+SUJET D'ÉTUDE 
+
+CHAPITRE 1
+ : PRÉSENTATION DU CADRE D’ETUDE
+
+SUJET D'ÉTUDE 
+
+I.
+PRESENTATION
+ DE LA STRUCTURE D’ACCUEIL Il sera question ici de fournir une description générale de l’institution, de retracer son historique, de préciser sa mission, ses objectifs, ainsi que ses principales attributions.
+Nous aborderons également son organisation interne, son fonctionnement, et les principales actions qu’elle mène dans le domaine d’intervention concerné.
+Cette présentation permettra d’avoir une vision claire de l’institution, de ses spécificités, et de son rôle dans la problématique abordée dans ce mémoire.
+Historique de WIREPICK SARL Créée en 2015, WIREPICK est une entreprise spécialisée dans les solutions de messagerie pour entreprises et opérateurs de réseaux mobiles.
+Elle a été fondée par M.
+HOUNTONDJI Maxime et a pour mission principale de connecter efficacement les opérateurs de réseaux mobiles aux entreprises à travers l’Afrique.
+Depuis sa création, WIREPICK s’est positionnée comme un acteur clé dans le domaine des services SMS, USSD et de messagerie vocale.
+L’entreprise fournit des solutions Wirepick-SMS Gateway, permettant une connectivité directe avec les opérateurs locaux et une intégration fluide avec différents systèmes d’information.
+Aujourd’hui, WIREPICK compte environ 50 collaborateurs et dessert principalement des opérateurs de réseaux mobiles ainsi que des entreprises.
+Situation géographique de WIREPICK SARL Figure1: Situation géographique de Wirepick Sarl – ( Source : Google maps + Google gemini ) Description des itinéraires d'accès à Wirepick SARL L'établissement Wirepick SARL est situé dans le quartier Aïdjedo, à proximité immédiate du Carrefour St-Cécile.
+Voici les deux voies d'accès principales : 1.
+Itinéraire Nord : En provenance de l'Étoile Rouge Cet itinéraire décrit l'accès depuis le carrefour de l'Étoile Rouge via l'axe principal menant au Rond-Point Sainte Cécile.
+Approche du Carrefour : Empruntez l'axe principal en direction du Rond-Point Sainte Cécile.
+Transit au Rond-Point : Engagez-vous dans le sens giratoire et prenez la sortie menant vers l'Avenue de la Libération (direction Sud, vers le marché Dantokpa).
+Intersection Finale : Immédiatement après avoir quitté le rond-point, tournez à gauche sur la première rue transversale (Rue 521).
+Localisation : Progressez sur environ 100 mètres.
+Le siège de Wirepick SARL se situe sur votre gauche, avant l'intersection suivante. 2.
+Itinéraire Sud : En provenance du Marché Dantokpa Cet itinéraire est destiné aux usagers remontant vers le nord de la ville par l'un des axes les plus fréquentés.
+Progression sur l'Avenue : Remontez l'Avenue de la Libération en direction du Nord (vers le quartier Ste Cécile).
+Point de bifurcation : Avant d'atteindre le Rond-Point Sainte Cécile, repérez la dernière rue à droite (juste avant l'entrée dans le sens giratoire).
+Engagement : Tournez à droite dans cette voie.
+Cette rue dessert notamment la zone de l'Hôtel Yamadjako.
+Localisation : Wirepick SARL est positionné sur le côté gauche de cette voie, facilement identifiable par sa proximité avec les structures de services environnantes.
+Objectifs de WIREPICK SARL Les principaux objectifs de WIREPICK sont : Fournir une plateforme SMS fiable et facile à utiliser pour les entreprises et opérateurs mobiles.
+Offrir des services USSD et de messagerie vocale intégrés.
+Garantir la stabilité, la performance et la sécurité des services SAAS proposés.
+Recueillir et traiter les retours clients pour améliorer en continu les produits.
+Former les collaborateurs pour maintenir un haut niveau de compétence technique et organisationnelle.
+Fonctionnement de la structure d’accueil Structure organisationnelle WIREPICK Bénin adopte une structure organisationnelle hiérarchisée et collaborative, articulée autour de plusieurs services complémentaires, chacun ayant des responsabilités bien définies : CEO (Chief Executive Officer / Directeur Général) : Il définit la vision stratégique de l’entreprise, fixe les objectifs commerciaux et supervise les partenariats stratégiques.
+CTO (Chief Technology Officer / Directeur Technique) : Il élabore la stratégie technologique, sélectionne les outils et technologies, supervise l’architecture des systèmes et veille à la sécurité informatique.
+Développeurs (30) : Ils sont chargés de la conception, du développement et de la maintenance des applications web et mobiles.
+Ils assurent également la gestion des bases de données, l’optimisation des performances, la sécurisation des systèmes, le déploiement des solutions et la correction des anomalies.
+Designers (6) : Ils analysent les besoins des utilisateurs, participent à la définition des fonctionnalités, conçoivent les interfaces graphiques et optimisent l’expérience utilisateur (UI/UX – User Interface / User Experience ).
+Marketers (5) : Ils développent et mettent en œuvre les stratégies de communication et de promotion des produits et services, contribuant ainsi à la visibilité et à la croissance de l’entreprise.
+Sales Managers (4) : Ils assurent la gestion des relations clients, le suivi commercial et la conclusion des ventes.
+Support Technique (2) : Il prend en charge l’assistance aux utilisateurs, traite les incidents techniques et veille à la satisfaction client.
+RH (Ressources Humaines) (1) : Ce service est chargé de la gestion du personnel, du recrutement, ainsi que du suivi administratif des employés.
+Figure 2
+: Organigramme de la hiérarchie de Wirepick
+
+– ( source: nous mêmes, 2026 ) Collaboration entre les services Les différents services collaborent selon un cycle de production continu et structuré : Idée → Conception → Développement → Lancement → Commercialisation → Support → Amélioration Dans ce processus, le CEO intervient pour la validation des décisions stratégiques majeures, tandis que le CTO garantit la cohérence technique des solutions mises en œuvre.
+Activités quotidiennes principales Les opérations quotidiennes de l’entreprise s’articulent autour des activités suivantes : Surveillance et vérification de la stabilité de la plateforme SaaS (Software as a Service)
+
+; Traitement automatisé des erreurs et prise en compte des retours utilisateurs ( feedback ); Coordination interservices afin d’assurer la continuité, la qualité et la performance des services proposés. 4.4.
+Ressources de la structure 4.4.1.
+Ressources matérielles Dans le cadre de ses activités, WIREPICK Bénin s’appuie sur une infrastructure matérielle moderne adaptée aux exigences des services numériques et des plateformes SaaS.
+Les équipes techniques travaillent principalement sur des ordinateurs portables et fixes de bonne capacité, généralement équipés de processeurs multicœurs, d’une mémoire vive suffisante (souvent supérieure à 8 Go de RAM) et de disques SSD, afin de supporter les environnements de développement et les outils de virtualisation.
+L’entreprise utilise également des infrastructures serveurs, majoritairement hébergées sur le cloud, permettant d’assurer : La disponibilité continue des services (24h/24) ; La gestion de volumes importants de données (messages SMS, logs, transactions) ; La scalabilité des applications en fonction de la demande.
+En complément, des équipements réseau (routeurs, switchs, connexions Internet haut débit) sont utilisés pour garantir une communication stable entre les systèmes internes et les opérateurs de réseaux mobiles.
+Les espaces de travail sont organisés de manière à favoriser la collaboration entre les équipes techniques, marketing et commerciales.
+Tableau détaillé des ressources matérielles de WIREPICK SARL Équipement Quantité estimée Marque / Modèle Spécifications techniques Utilisation Ordinateurs portables de développement 22 HP ProBook 450 G8 Intel Core i7 11ᵉ Génération, RAM 16 Go DDR4, SSD 512 Go, écran Full HD 15.6’’ Développement web, backend, maintenance SaaS Ordinateurs portables de développement 12 Dell Latitude 5520 Intel Core i5, RAM 8 à 16 Go, SSD 256 Go, Windows 11 Pro Développement et tests applicatifs Stations de travail techniques 8 Lenovo ThinkCentre M70s Intel Core i7, RAM 16 Go, SSD 1 To Supervision technique et monitoring Postes administratifs 6 HP EliteDesk Intel Core i5, RAM 8 Go, SSD 256 Go Gestion administrative et commerciale MacBook de design 3 Apple MacBook Pro Puce Apple M1/M2, RAM 16 Go, SSD 512 Go Design UI/UX et conception graphique Serveurs cloud Plusieurs instances AWS / DigitalOcean Machines virtuelles Linux, stockage sécurisé, sauvegardes automatiques Hébergement des plateformes SaaS Routeur principal 1 MikroTik RB4011 Gestion réseau Gigabit, sécurité réseau, VPN Administration réseau Switchs réseau 4 Cisco Catalyst 2960 Switch Gigabit 24 ports Distribution du réseau interne Points d’accès Wi-Fi 5 TP-Link Omada Wi-Fi double bande sécurisé Connectivité sans fil Onduleurs (UPS) 6 APC Easy UPS Protection électrique et autonomie temporaire Sécurité des équipements Smartphones de test Android 6 Samsung Galaxy A Series Android récent, double SIM Tests SMS et USSD Smartphones de test iOS 3 iPhone 11 / SE iOS récent Vérification compatibilité iOS Imprimantes multifonctions 2 KYOCERA ECOSYS M2040dn Impression laser monochrome, scanner, photocopie, Ethernet Gestion documentaire Imprimantes réseau 1 KYOCERA ECOSYS P2235dn Impression recto-verso rapide Impression administrative Écrans externes 15 Dell / HP 24 pouces Résolution Full HD Confort de travail des développeurs Groupe électrogène 1 Hyundai / Perkins Alimentation de secours Continuité des activités Caméras de surveillance 6 Hikvision IP Camera Surveillance HD connectée Sécurité des locaux 
+
+Tableau 1
+: Tableau détaillé des ressources matérielles de WIREPICK SARL – ( Source: informations recueillies à l’entreprise, 2026 ) 4.4.2.
+Ressources logicielles Sur le plan logiciel, WIREPICK utilise un ensemble d’outils adaptés au développement, au déploiement et à la maintenance de ses services : Des environnements de développement intégrés (IDE) tels que Visual Studio Code, largement utilisés pour le développement web et backend ; Des systèmes de gestion de bases de données relationnelles et/ou non relationnelles pour le stockage des informations clients et des flux de communication ; Des outils de gestion de versions comme Git, facilitant le travail collaboratif et le suivi des modifications du code ; Des outils de test permettant de simuler les services SMS, USSD et de messagerie vocale afin de valider leur bon fonctionnement avant mise en production ; Des outils de supervision et de monitoring permettant de suivre en temps réel les performances du système et de détecter les anomalies ; Des plateformes internes ou interfaces d’administration utilisées pour gérer les clients, les campagnes SMS et les services proposés.
+Tableau des ressources logicielles de WIREPICK SARL Logiciels / Outils Catégorie Description / Utilisation Visual Studio Code IDE / Développement Développement d’applications web et backend Git Gestion de versions Suivi et gestion collaborative du code source GitHub / GitLab Hébergement de code Collaboration et sauvegarde des projets MySQL Base de données Gestion des données clients et services Postman API Testing Tests des API et des services web Navigateurs Web (Chrome, Firefox) Navigation / Test Vérification des applications et interfaces Outils de monitoring Supervision Surveillance des performances des services SaaS Plateforme SMS Gateway Communication Gestion des campagnes SMS et routage des messages Interfaces USSD Télécommunication Gestion des services USSD Suites bureautiques Productivité Traitement de texte, tableaux et présentations Outils de messagerie professionnelle Communication Collaboration interne entre les équipes Systèmes de sauvegarde cloud Sécurité / Sauvegarde Protection et restauration des données 
+
+Tableau 2
+: Tableau détaillé des ressources matérielles de WIREPICK SARL – ( Source: informations recueillies à l’entreprise, 2026 ) Tableau des ressources réseau et infrastructure Ressource Description Rôle Connexion Internet haut débit Fibre optique / connexion dédiée Assure la disponibilité des services Infrastructure cloud Hébergement distant sécurisé Disponibilité continue des applications Réseau local (LAN) Réseau interne sécurisé Communication entre les postes Pare-feu et sécurité réseau Protection réseau Sécurisation des données et accès Système de sauvegarde Sauvegarde périodique Protection contre les pertes de données 
+
+Tableau 3
+: Tableau détaillé des ressources réseau et infrastructures de WIREPICK SARL – ( Source: informations recueillies à l’entreprise, 2026 ) Ces outils permettent d’assurer la qualité, la sécurité et la performance des solutions proposées par l’entreprise.
+II.
+DÉROULEMENT DU STAGE 1.
+Objectifs du stage Au cours de notre stage chez WIREPICK, nous nous sommes fixés les objectifs suivants : Nous imprégner des méthodes de travail en entreprise ; Observer et assimiler les pratiques liées à la gestion et à la maintenance des services technologiques proposés ; Comprendre le fonctionnement d’une plateforme SaaS (Software as a Service) ainsi que la gestion de la relation client. 2.
+Activités effectuées Durant notre stage, nous avons mené plusieurs activités significatives, notamment : L’assistance et l’observation de la gestion quotidienne de la plateforme SaaS ; La réception et l’analyse des retours clients ( feedbacks ), ainsi que les tests des fonctionnalités du point de vue du fournisseur de service ( service provider ) ; L’étude des procédures de gestion des erreurs et des mécanismes d’amélioration continue des services. 3.
+Difficultés rencontrées Bien que ce stage ait été particulièrement enrichissant, nous avons été confrontés à certaines difficultés : L’adaptation au rythme de travail soutenu et exigeant de l’entreprise ; La compréhension de certaines tâches techniques complexes liées à la maintenance de la plateforme SaaS ; La gestion des incidents et des retours clients, nécessitant rigueur, précision et réactivité.
+Grâce à l’accompagnement et au soutien de l’équipe, ces difficultés ont pu être surmontées.
+Cette expérience nous a ainsi permis de développer des compétences pratiques en gestion de plateformes SaaS, en suivi de la relation client et en collaboration interservices.
+CHAPITRE 2
+ : ANALYSE ET CONCEPTION DU NOUVEAU PROJET 
+
+CHAPITRE 2
+ : ANALYSE ET CONCEPTION DU NOUVEAU PROJET I.
+Problématique La transformation numérique globale du secteur financier, poussée par l'expansion exponentielle du Mobile Money et des paiements en ligne, a drastiquement accéléré l'inclusion financière.
+Toutefois, cette dématérialisation a créé un terreau fertile pour une cybercriminalité moderne et particulièrement sophistiquée.
+Face à la recrudescence d'attaques complexes (phishing, fraude par usurpation de compte, SIM Swapping ou opérations asynchrones de blanchiment), les délais de détection des banques s'avèrent de plus en plus inadéquats.
+La principale faille réside dans le temps de réaction : dès l’instant où un virement illégitime est exécuté, les chances de recouvrir les fonds s'amenuisent de manière drastique.
+La problématique centrale de notre étude se pose donc ainsi :  Comment concevoir un système automatisé de supervision capable d'identifier les schémas comportementaux frauduleux en temps réel, afin de bloquer les transactions suspectes avec précision, avant que celles-ci ne soient définitivement validées et irréversibles ? II. Étude et critique de l’existant Dans le domaine de la détection de fraude et de la supervision bancaire, plusieurs plateformes et systèmes informatiques sont actuellement utilisés par les institutions financières pour surveiller et sécuriser leurs transactions en ligne et Mobile Money.
+Cependant, chaque solution présente des avantages et des limites spécifiques qu'il est important de considérer.
+NICE Actimize Limites :  Bien qu'il s'agisse de l'un des leaders mondiaux offrant une plateforme ultra-performante basée sur des algorithmes avancés, la personnalisation des règles de NICE Actimize peut être limitée et s'avérer très complexe, ce qui peut ne pas répondre aux besoins technologiques spécifiques des banques locales.
+De plus, son statut de solution logicielle propriétaire ("boîte noire") rend ses rouages opaques pour les développeurs internes, limitant leur indépendance.
+Enfin, en fonction de la taille de l'établissement financier, les coûts de licence et de déploiement peuvent devenir colossaux, rendant l'utilisation de cette plateforme inaccessible pour les acteurs de la microfinance, les néobanques africaines ou les structures avec un budget limité.
+SAS Fraud Management Limites :  Bien qu'efficace pour l'analyse de données massives (Big Data) des grandes banques internationales, des solutions lourdes comme SAS exigent une infrastructure matérielle particulièrement coûteuse (serveurs puissants).
+Elles requièrent par ailleurs un personnel hautement qualifié (ingénieurs data spécialisés), ce qui complique sévèrement leur adoption.
+Ces contraintes limitent leur utilité dans un contexte de petites équipes de sécurité informatique où la flexibilité, l'agilité logicielle et l'intégration Open Source sont cruciales pour une gestion optimale des fraudes au quotidien.
+Les Systèmes de Moteurs de Règles Déterministes (Inclus nativement dans les Core Banking comme Amplitude) Limites :  Ces systèmes s'appuient sur des modèles statiques de type "Si-Alors" paramétrés manuellement.
+Bien qu'ils soient simples à mettre en œuvre, ils manquent de fonctionnalités essentielles d'intelligence et d'adaptabilité, ce qui limite gravement leur utilité face aux cybercriminels qui font évoluer constamment leurs méthodes d'attaque.
+En outre, une mauvaise paramétrisation de ces outils génère souvent un taux très élevé de fausses transactions suspectes (faux positifs), entravant les opérations légitimes des clients et surchargeant inutilement les gestionnaires bancaires.
+Le Traitement Post-Transactionnel (Batch Processing) Limites :  En tant qu'approche encore grandement utilisée par de nombreuses institutions de petite taille, cette méthode repose sur le contrôle et le rapprochement comptable en fin de journée (ou de semaine).
+Sa limite fondamentale justifie son échec face à la cybercriminalité moderne : elle n'est pas conçue pour l'action en flux continu (temps-réel).
+Elle ne dispose pas du pouvoir d'interception instantané, ce qui par conséquent rend cette gestion complètement inutile depuis un point de vue préventif : lorsque l'alerte est relevée par l'auditeur, le virement est déjà passé et les fonds volés sont irrécupérables.
+III.
+Approche de solution Afin de pallier ces nombreuses insuffisances, nous avons conceptualisé le système  AZUR+.
+La solution repose sur une architecture de "Filtrage Hybride et Temps Réel".
+Elle ingère les flux de transactions provenant du Core Banking en quelques millisecondes et croise deux niveaux d'analyse en parallèle : Une vérification déterministe (des règles comportementales strictes et paramétrables gérées par l'institution).
+Une analyse prédictive nourrie par l'Intelligence Artificielle (Modèle Machine Learning supervisé) apte à déceler des signaux faibles (anomalies de vélocité, changements furtifs d'appareils, etc.).
+Le système opte ensuite pour trois actions : validation transparente, blocage de sécurité total, ou l'envoi instantané d'un
+
+« Challenge t » interactif au client sur son mobile pour approbation.
+IV.
+Objectifs L'objectif général est de développer et déployer un système complet de prévention anti-fraude robuste.
+Pour y parvenir, ce projet se décline en objectifs spécifiques suivants : S'intégrer de manière transparente avec un Core Banking System de renom (Apache Fineract). Éduquer et déployer en production un modèle d’Intelligence Artificielle dépassant les 85% de précision (F1-score) sans ralentir la vélocité des paiements.
+Livrer une application mobile conférant au client final un pouvoir de verrouillage asynchrone lors de détections suspectes.
+Assurer une remontée d'information pertinente via un portail d'administration taillé pour les analystes de sécurité (SOC).
+V.
+L imites du projet Ce projet présente cependant quelques limitations liées à sa nature.
+D’abord, le modèle d’apprentissage automatique dépend de la fiabilité des jeux de données originaux et requiert un processus de ré-entrainement continu (MLOps) pour rester pertinent face aux fraudes émergentes mutantes.
+De plus, faute d'un accès aux normes législatives (PCI-DSS) et réseaux interbancaires mondiaux propriétaires (type SWIFT), le périmètre des tests reste confiné à des événements simulés à la fidélité mathématique démontrable, mais exempt de compensations bancaires internationales effectives.
+Dépendance à la qualité des données : La grande force d'AZUR+ repose sur son module d'Intelligence Artificielle (Machine Learning).
+Toutefois, ses algorithmes ont été entraînés sur un jeu de données spécifique.
+Avec le temps, les comportements financiers légitimes des utilisateurs évoluent de la même façon que les techniques d'attaques des cybercriminels mutent.
+Par conséquent, si le modèle n'est pas réentraîné fréquemment (via des processus de MLOps), il risque de perdre dramatiquement en efficacité et en précision.
+Exigence de connectivité et latence réseau : Conçue comme une architecture événementielle asynchrone ultra-rapide (NodeJS, Firebase, WebSocket), la plateforme exige une connectivité internet quasi infaillible.
+Si l'infrastructure de la banque subit de fortes perturbations d'accès réseau, ou si l'utilisateur final se trouve dans une zone sans aucune couverture internet mobile pour recevoir son "Challenge" d'authentification, le système de validation en temps-réel sera compromis, forçant le rejet préventif des de la transaction.
+L'expérience Utilisateur :  La particularité d'AZUR+ d'impliquer le client final grâce à l'application mobile en cas de doute est innovante, mais présente un risque ergonomique.
+Bloquer un transfert légitime pour envoyer une alerte "Est-ce bien vous ?" sur le téléphone de l'usager rajoute une friction dans le parcours client.
+Si le seuil d'alerte du système est mal calibré, l'excès de notifications de sécurité finira par agacer un client habitué aux paiements instantanés et invisibles.
+CHAPITRE 3
+ : ANALYSE ET CONCEPTION DU NOUVEAU SYSTEME 
+
+CHAPITRE 3
+ : ANALYSE ET CONCEPTION DU NOUVEAU SYSTEME I.
+Méthodologie 
+
+A - Présentation du langage
+ UML Le langage UML (Unified Modeling Language) nous a servi de fondement méthodologique pour ce système.
+Contrairement à la méthode Merise qui cloisonne traditionnellement les traitements et les données, UML s'inscrit dans un paradigme "Objet".
+Construit autour d'une logique de micro-services interactifs et d’échanges inter-systèmes (Webhooks, API REST, notifications Push), le projet AZUR+ nécessitait une méthode garantissant une traçabilité parfaite.
+L'UML nous a ainsi permis d'unifier la conception, de la formulation des scénarios d'urgence aux schémas physiques des serveurs de bases de données.
+B- Choix de l'outil d'analyse L'UML a été conçu pour être un langage visuel commun, facile à comprendre, et riche en termes de sémantique et de syntaxe.
+Il est destiné à l'architecture, la conception et la mise en œuvre de systèmes logiciels complexes, en montrant leur structure et leur comportement.
+Bien qu'il soit souvent utilisé dans le développement logiciel, UML peut aussi être appliqué à l'industrie, pour modéliser des processus.
+UML ne permet pas de programmer directement, mais il existe des outils permettant de générer du code dans plusieurs langages à partir de diagrammes UML.
+L'UML est étroitement lié à l'analyse et à la conception orientées objet, ce qui le rend très utile pour concevoir des systèmes de manière structurée.
+De plus, UML permet de documenter un système, facilitant ainsi les échanges entre les différentes parties prenantes pendant les phases de développement et de maintenance.
+II.
+Présentation des diagrammes comportementaux et Interactions A- Présentation des diagrammes comportementaux Les diagrammes comportementaux sont utilisés pour montrer comment un système se comporte en réponse aux actions d’un utilisateur ou d’un autre système.
+Ils décrivent les réactions, les processus et les enchaînements d’actions qui se produisent à l’intérieur du système au cours de son fonctionnement. 1.
+Diagramme de cas d’utilisation Les acteurs du système Un acteur désigne toute entité externe qui interagit directement avec un système.
+Du point de vue du système, il existe deux catégories d’acteurs : Acteurs primaires : Leur objectif principal dépend du cas d'utilisation du système.
+Acteurs secondaires : Ils interagissent avec le système, mais leur objectif ne repose pas directement sur le cas d'utilisation.
+Du point de vue général, on distingue trois types d’acteurs : Acteurs humains : Ce sont les utilisateurs du système qui interagissent via une interface (ex : client, administrateur).
+Acteurs logiciels : Ce sont des programmes ou systèmes autonomes qui échangent des données avec l’application via une interface logicielle (ex : base de données, application de gestion).
+Acteurs matériels : Ce sont des équipements physiques qui traitent les données du système ou exécutent des actions sous son contrôle (ex : serveur, imprimante).
+Dans le cadre de notre étude, nous avons identifié les acteurs suivants : Les Acteurs Primaires Ces acteurs initient activement les processus et interagissent directement avec la passerelle du système.
+Le Client Final (via l’application) :  Il représente le titulaire légitime du compte bancaire.
+Sur le plan opérationnel, son rôle est d’initier des opérations financières (comme les virements bancaires) et de consulter ses informations de portefeuille (solde courant et historique).
+Sur le plan sécuritaire, il agit comme le maillon final de la vérification : lorsqu'une transaction est classée comme "suspecte" par l'algorithme, le client devient acteur de l'investigation en recevant un  Challenge de Sécurité  (alerte Push ou OTP) auquel il doit répondre pour confirmer qu'il est bien à l'origine de la demande, ou au contraire, alerter la banque d'une manœuvre frauduleuse.
+L'Analyste SOC (Security Operations Center) :  Il incarne l'expert en cybersécurité ou l'administrateur de l'institution financière, opérant depuis un tableau de bord (Dashboard) sécurisé.
+Son rôle principal consiste à superviser continuellement le flux transactionnel du réseau.
+De plus, il a la charge exclusive de traiter manuellement les "files d'investigation".
+Face à des alertes critiques non résolues par le client, l'analyste possède l'habilitation métier pour certifier une fraude avérée, identifier un système de "Faux Positifs" pour ajuster l'algorithme, et ordonner manuellement le gel ou le dégel du compte d'un usager.
+Le Simulateur de Fraude (Composant de Stress-Test) :  Bien qu'il s'agisse d'un programme informatique, il est modélisé au titre d'acteur primaire, car il se substitue au comportement humain dans un environnement de test isolé.
+Son rôle est de générer massivement des transactions factices et de reproduire méthodiquement des scénarios d'attaques bancaires connus (tels que la "Haute Fréquence" ou le "Voyage Impossible"), dans le but d'éprouver la réactivité et la précision de la plateforme algorithmique sans impacter les dépôts monétaires réels.
+Les Acteurs Secondaires Ces acteurs regroupent les systèmes d'information externes ou dépendants, dont les données ou l'exécution sont requises par l'orchestrateur central (Hub Azur+) pour mener à bien le cycle de vie d'une transaction.
+Le Core Banking System (CBS - Apache Fineract) :  Il s'agit du socle de gestion comptable et financière.
+Il n’est pas le système étudié (Azur+), mais un acteur indispensable de son périmètre environnemental.
+Son rôle est double : Rôle de déclencheur  : Il intercepte les tentatives de virements à la source et notifie immédiatement le système Azur+ de cette demande (via un mécanisme de  WebHook ).
+Rôle d'exécutant  : Il applique sans condition les ordres de sécurité décidés par notre système anti-fraude, autorisant un retrait en cas d'approbation ou instaurant le gel immédiat d'un compte sur injonction algorithmique.
+Le Moteur de Machine Learning (Service ML Python) :  Il est modélisé comme un acteur secondaire (ou un sous-système externe spécialisé) déporté sur une infrastructure distincte.
+Son rôle unique est purement analytique : sur sollicitation stricte de l'orchestrateur Azur+, il réceptionne les variables contextuelles d'une transaction, effectue une inférence probabiliste au moyen de ses algorithmes pré-entraînés (ex: Random Forest), et restitue en retour un "Score de Risque" (de 0 à 100).
+Il n'applique aucune règle métier directement ; il endosse un rôle de conseiller statistique et décisionnel pour le Hub central.
+Diagramme de contexte statique Le diagramme de contexte statique illustre le système ainsi que les acteurs qui interagissent
+
+avec
+
+lui.
+Il
+
+permet
+
+de
+
+définir le
+
+nombre
+
+d’instances d’acteurs
+
+connectés
+
+au système à un instant donné.
+Le diagramme de contexte statique de notre système se présente comme suit : 
+
+Figure 3
+ : Diagramme de contexte statique – ( source: nous-mêmes, 2026 ) Diagramme de cas d’utilisation Le diagramme de cas d’utilisation représente les différents utilisateurs d’un système, les fonctionnalités de ce dernier et les interactions des acteurs avec le système.
+Le diagramme de cas d’utilisation relatif à notre système se présente comme suit : 
+
+Figure 4
+
+
+:
+
+Diagramme de cas d'utilisation – ( source: nous-mêmes, 2026 ) Description des cas d’utilisation Cas d’utilisation "
+
+Traiter une alerte de fraude "
+
+SOMMAIRE D’IDENTIFICATION Titre : « Traiter une alerte de fraude » Résumé : Ce cas permet à un analyste en cybersécurité d'analyser en profondeur une transaction ayant été bloquée ou mise en attente par l'algorithme IA, puis de prendre une décision finale quant à sa légitimité (Confirmer la fraude ou Marquer comme faux positif).
+Acteur : Analyste SOC (Security Operations Center) Responsables : ARALE Daril et DIMON Phanel Description des scénarios Préconditions Le réseau fonctionne correctement.
+L'analyste est authentifié sur le Dashboard d'administration Azur+.
+Le système de détection a intercepté une transaction avec un score de risque critique et une alerte au statut "OPEN" est présente dans la file d'investigation.
+Scénario principal (cas nominal : fraude confirmée) L'analyste accède à la page “File d'attente des investigations”.
+Le système affiche la liste des alertes entrantes en temps réel (poussées via WebSocket).
+L'analyste clique sur l'alerte la plus critique (Score &gt;= 80).
+Le système (API Hub) génère et affiche une fiche d'investigation détaillée : profil de référence du client (KYC), variables hors normes temporelles, et indicateurs soulevés par le modèle ML (ex : Voyage Impossible détecté).
+L'analyste évalue les données et clique sur le bouton "Confirmer la Fraude".
+Le système met à jour le statut de l'alerte en "FRAUD_CONFIRMED".
+Le système envoie immédiatement un ordre au Core Banking (Fineract) de geler définitivement les fonds du compte concerné.
+L'alerte disparaît de la file d'attente active de l'analyste.
+Enchaînements alternatifs
+
+A1 : Qualification de l'alerte en Faux Positif (Activité légitime) Cet enchaînement commence au point 5 du scénario principal. 5. À travers les données, l'analyste constate que le comportement est marginal mais parfaitement justifié (exemple : le client a prévu un voyage d'affaires), il clique donc sur "Marquer comme Faux Positif". 6.
+Le système bascule le statut de l'alerte en "RESOLVED_SAFE". 7.
+Le système notifie le Core Banking System d'autoriser la transaction et de lever les éventuels blocages de fonds. 8.  (Fonctionnalité secondaire de MLOps)  : Le système transmet silencieusement le dossier "Faux Positif" vers la base du Moteur de Machine Learning pour rétro-apprentissage, afin d'adapter les futurs algorithmes.
+Le scénario nominal reprend au point 8.
+Enchaînement d’erreur E1 : Perte de connexion réseau ou API distante injoignable  Cet enchaînement commence au point 7 du scénario principal ou de l'enchaînement A1 .
+Si le Core Banking System (Apache Fineract) crashe ou n'est plus joignable par l'API Hub pour appliquer le gel du compte, le système affiche un pop-up d'erreur critique à l'analyste :  "Erreur de communication avec le cœur bancaire.
+L'action n'a pas pu être appliquée." L'alerte est alors annulée, repasse au statut "OPEN" et reste dans la file d'investigation pour être traitée ultérieurement dès le retour du réseau.
+Postcondition
+
+La menace est neutralisée (le compte a été sécurisé et les fonds sauvés par le système bancaire), ou bien la gêne pour un client légitime est résolue et la transaction poursuit son cours.
+
+2.
+Diagramme d’activité Un diagramme d’activités est un organigramme illustrant les activités exécutées par un système et mettant en valeur les différents chemins fonctionnels qu’un utilisateur peut parcourir en travaillant avec le système.
+Le diagramme d’activités relatif à notre système se présente comme suit : Cas du traitement d’alertes côté analyste SOC 
+
+Figure 5
+
+
+:
+
+Diagramme d'activité du cas «
+
+traiter alerte côté analyste SOC » - (source: nous-mêmes, 2026) Cas du traitement d’alerte côté client 
+
+Figure 6
+ : Diagramme d'activité du « cas de traitement d’alerte côté client » - ( Source: Nous-mêmes, 2026) B.
+Présentation des diagrammes d’interactions Les diagrammes d’interactions montrent comment les différents éléments d’un système communiquent entre eux pour accomplir une tâche.
+Ils décrivent l’échange de messages entre les objets ou les composants du système, en mettant l’accent sur l’ordre et la logique des échanges.
+Présentation du diagramme de séquence Le diagramme de séquence est un type de diagramme d’interaction qui met en évidence l’ordre chronologique dans lequel les messages sont échangés entre les objets ou acteurs impliqués dans un scénario spécifique.
+Il permet de visualiser de manière précise l’enchaînement des interactions, ainsi que la durée de ces échanges.
+Le diagramme de séquence relatif à notre système se présente comme suit : F igure 7 : Diagramme de séquence du cas « Gel de compte par l’analyste » - ( Source: Nous-mêmes, 2026 )
+
+C.
+Présentation du diagramme structurel Les diagrammes structurels montrent comment un système est organisé.
+Ils décrivent la structure statique du système, comme les composants, les classes, les objets et leurs relations entre eux, sans se concentrer sur leurs interactions ou comportements. 1.
+Diagramme de classes a.
+Identification des classes Une classe est une représentation d’un ensemble d’objets partageant les mêmes caractéristiques.
+Elle est définie par son nom, ses attributs et ses méthodes.
+Dans le cadre de notre projet de gestion et de détection de fraude bancaire, notre architecture de données repose sur les entités (classes) principales suivantes :  Users  (les clients finaux avec leur profil KYC),  Accounts  (les comptes bancaires des clients),  Transactions  (le flux numérique des paiements et virements),  Fraud_Alerts  (les alertes de sécurité générées par l'orchestrateur),  Analysts  (les opérateurs de cybersécurité du SOC),  User_Behavioral_Baselines  (l'historique des habitudes pour le modèle d'IA), et  Device_Registry  (le répertoire des téléphones et adresses IP dignes de confiance) b.
+Diagramme de classes Le diagramme de classes est une représentation statique des classes composant le système, ainsi que les relations qui existent entre elles.
+Le diagramme de classe relatif à notre système se présente comme suit : 
+
+Figure 8
+ : Diagramme de class e – ( Source: Nous-mêmes, 2026 ) II.
+Règles de domaine Dans le cadre de la supervision bancaire et de la détection de fraudes, plusieurs règles de domaine sont essentielles pour assurer la sécurité des fonds tout en garantissant la fluidité de l'expérience utilisateur.
+Ces règles dictent le comportement de notre plateforme Azur+ (FraudShield) face aux transactions financières.
+Parmi les règles fondamentales de notre système, on peut citer : Sécurisation et conformité KYC (Know Your Customer) :  Chaque transaction doit être formellement rattachée à un utilisateur authentifié et à un profil matériel connu (empreinte de l'appareil, adresses IP habituelles).
+Toute altération inexpliquée du profil ou accès depuis une zone sans historique de confiance doit déclencher une vérification accrue.
+Principe d'Audit et de Conservation des traces :  Toute transaction évaluée par le système, qu'elle soit rejetée, mise en attente ou validée, doit être historisée de manière inaltérable (Timestamp, IP, Montant, Score de décision).
+Cet historique numérique servira de preuve en cas de litige financier ou de plainte client.
+Arbitrage dynamique (Frictionless vs Challenge) :  L'expérience du client final ne doit pas être dégradée inutilement.
+Si le moteur d'Intelligence Artificielle retourne un bas Score de Risque (&lt; 40), la transaction doit s'exécuter silencieusement ( Frictionless ).
+La friction (demande de validation renforcée par OTP ou Biométrie) n'est imposée à l'utilisateur que si un risque suspect (Score de 40 à 79) est avéré.
+Ordre de gel préventif immédiat :  Si une transaction obtient un risque critique (Score ≥ 80), la sécurité du système prime sur la disponibilité logicielle.
+Le système doit ordonner de façon automatisée le blocage de la transaction et la mise sous séquestre (Gel / Freeze) du compte via l'API du  Core Banking System , empêchant toute fuite de capitaux vers l'extérieur jusqu'à l'intervention d'un Analyste SOC.
+Transparence et boucle d'apprentissage continu (MLOps) :  Les modèles de détection algorithmique produisent des "Faux Positifs" (blocages injustifiés).
+La règle veut que chaque faux positif signalé par le client ou corrigé par l'Analyste SOC soit logué et transmis au moteur d'apprentissage, afin d'ajuster le profil statistique du client et d'améliorer la précision future du système.
+Ségrégation des habilitations administratives :  Un Analyste (opérateur SOC) a la capacité de surveiller les alertes globales et de geler ou dégeler des comptes, mais ne doit sous aucun prétexte avoir la capacité d'initier un virement sur le compte d'un client.
+Ces règles de domaine permettent d’assurer la conformité de FraudShield avec les attentes sécuritaires des institutions financières modernes, protégeant l'utilisateurs des cyberattaques (Ingénierie sociale, Impossible Travel) sans bloquer abusivement l'économie quotidienne de la banque.
+CHAPITRE 4
+ : CONCEPTION DU SYSTEME 
+
+CHAPITRE 4
+ : CONCEPTION DU SYSTEME I.
+Présentation des outils de développement A.
+Les Technologies
+
+1.
+Les langages utilisés Nos choix de langage concernant notre projet sont les suivants :
+
+CSS Le terme CSS signifie "Cascading Style Sheets", ce qui se traduit par "feuilles de style en cascade".
+Le CSS est un langage informatique utilisé sur Internet pour mettre en forme les fichiers HTML ou XML.
+En d'autres termes, les fichiers CSS contiennent du code qui permet de définir l'apparence d'une page web.
+Grâce au CSS, nous pouvons ajouter des styles au contenu de notre application web, comme les couleurs, les polices et la disposition des éléments, pour créer une interface graphique attrayante et bien structurée.
+JavaScript JavaScript est un langage de programmation, et plus précisément un langage de script orienté objet, utilisé principalement dans les pages web.
+Il permet d'ajouter des animations, des effets ou de créer du contenu qui se met à jour de manière dynamique sur une page HTML.
+Contrairement aux langages côté serveur, JavaScript s'exécute directement dans le navigateur de l'utilisateur, sur son propre ordinateur, et non sur le serveur web.
+Cela permet de rendre les pages web plus interactives et réactives, sans avoir à recharger toute la page.
+JSON Le JavaScript Object Notation (JSON) est le format d'échange de données qui répond à ce besoin.
+Le format de données JSON est devenu populaire auprès des développeurs, car il se présente sous la forme de texte léger et lisible en plus de nécessiter moins de codage et de rendre les processus plus rapides.
+Il nous a permis d’encoder, de stocker et de transférer les données entre un client et serveur.
+TypeScript TypeScript est un langage de programmation libre développé par Microsoft.
+Il agit comme une surcouche asynchrone et strictement typée de JavaScript.
+En forçant la déclaration des types, il sécurise le code et identifie les pannes systémiques avant l'exécution.
+Dans FraudShield, TypeScript est la  colonne vertébrale globale  : il a été le langage exclusif pour tout le codage du système serveur complexe (Backend API) et la programmation des interfaces expertes clientes.
+Python
+
+Python est l'incontournable langage de la Data Science et de l'intelligence artificielle.
+Doté d'une syntaxe mathématique claire, il a été rigoureusement confiné à la construction de notre microservice modélisant la détection statistique d'anomalies bancaires expertes. 2.
+Les Framework et bibliothèques Un Framework (ou cadre de travail en français) est un ensemble d’outils et de composants logiciels utilisé en programmation pour faciliter le développement d’un logiciel ou d’une application.
+Il offre une structure de base déjà prête, ce qui permet aux développeurs de ne pas recommencer le travail depuis le début à chaque nouveau projet.
+L’objectif principal d’un Framework est de simplifier, d’accélérer et d’uniformiser le processus de développement.
+Dans le cadre de notre projet nous ferons l’usage quelques Framework parmi les multitudes qui existent : L’écosystème Front-end Pour la refonte en pages unifiées et ultra-accessibles, nous avons retenu  React .
+C'est une bibliothèque JavaScript/TypeScript pensée par Meta (Facebook) focalisée sur la réactivité de composants cloisonnés et asynchrones.
+React n'opère pas seul, il est propulsé par  Vite  (un outil de construction remplaçant Webpack pour une expérience fulgurante) et soutenu par  Zustand , un micro-gestionnaire spécialisé dans les états centralisés des interfaces.
+L’écosystème Back-end et serveurs Le nœud névralgique de ce système est  NestJS , fonctionnant sur l'environnement d'exécution  Node.js .
+NestJS est un framework d'entreprise robuste permettant la création d'API REST très structurées et asynchrones.
+C'est lui qui héberge l'ORM (Object-Relational Mapping)  TypeORM , chargé du dialogue entre le code et la persistance en base de données.
+Côté Machine Learning, l'API d'exposition retenue est  FastAPI  (un micro-framework Python très performant, assorti de son validateur de données  Pydantic ), afin de répondre instantanément aux prédictions demandées par le nœud central.
+Les Bibliothèques Expertes Complémentaires Pour répondre aux exigences visuelles de notre plateau d'analyste fonctionnel, ont été intégrés  Recharts  (génération d'histogrammes et statistiques vivantes de fraude) ainsi que  Leaflet  (bibliothèque cartographique pour tracer l'origine géographique d'une anomalie).
+Les alertes temps-réel ont quant à elles été rendues possibles grâce à l'implémentation complète des WebSockets pilotée par la technologie bidirectionnelle  Socket.io .
+Les Frameworks natifs d'Intelligence Artificielle Le cœur prédictif a été bâti autour de l'indéboulonnable module  Scikit-learn , chargé d'orchestrer la forêt aléatoire statistique de nos calculs.
+La manipulation vectorielle et le modelage des dimensions des vastes fichiers transactionnels ont été effectués en mémoire grâce à la complémentarité de  Pandas  et  NumPy .
+B.
+Les environnements Afin de concevoir, développer, tester et déployer l'ensemble des différents microservices de notre infrastructure distribuée avec rigueur, nous nous sommes appuyés sur un riche écosystème d'outils d'exécution, d'analyse et d'intelligence.
+Chaque environnement a rempli une mission précise au sein de notre cycle d'ingénierie logicielle.
+Visual Studio Code (VS Code)  Éditeur de code léger, hautement extensible et multiplateforme édité par Microsoft, VS Code a opéré en tant que pivot central au quotidien.
+Il nous a permis de rassembler toutes ou la grande majorité de nos bases de code dans une interface unifiée.
+Grâce à son moteur intelligent (IntelliSense), son terminal en ligne de commande intégré et son système de modules communautaires, il a assuré une productivité maximale, nous permettant de naviguer et d'écrire fluidement à travers le code complexe en TypeScript, Python ou JavaScript.
+Antigravity Conscients de l'envergure, de la rapidité d'évolution des frameworks modernes et de la dimension architecturale que requérait un tel projet, nous avons eu l'opportunité d'intégrer ponctuellement  Antigravity .
+Développé par Google Deepmind, cet agent d'intelligence artificielle avancé centré sur l'ingénierie a fait office de partenaire de codage virtuel ( pair programmer ).
+Il a été un allié redoutable dans la résolution de bugs structurels complexes (débogage d'interfaces, structuration de l'API), la découverte documentaire de dépendances spécifiques expertes, et l'optimisation des structures du code, en apportant un inestimable gain de temps.
+Postman Postman est un outil collaboratif incontournable pour le développement, le test et la
+
+documentation d’API.
+Dans notre projet, nous avons principalement utilisé Postman pour tester les routes de l’API Laravel que nous avons développée.
+Il permet de simuler des requêtes HTTP (GET, POST, PUT, DELETE, etc.) et d’analyser les réponses du serveur.
+L’interface conviviale de Postman nous a permis de configurer facilement les en-têtes, les paramètres, les tokens d’authentification, et d’automatiser certains tests grâce aux scripts intégrés.
+Cet outil nous a permis de valider rapidement le bon fonctionnement des points de terminaison de l’API avant l’intégration côté mobile.
+XAMPP Server L'infrastructure de notre système reposant irrémédiablement sur la sauvegarde et la véracité de nos états de transactions financières, XAMPP s'est avéré indispensable dans l'environnement local.
+Véritable standard du marché, cet environnement unifiant nous a fourni très rapidement un serveur de base de données relationnelle MySQL opérationnel pour la persistance locale de notre projet (piloté par l'ORM de l'API).
+Il a considérablement assoupli notre gestion métier et accéléré nos tests d'interrogation du backend, évitant de recourir continuellement à des clusters externes ou des scripts d'installation contraignants. -    Docker Face à la grande ramification des éléments logiciels composant notre ingénierie de vérification (Modules web, cluster d'API, Microservice ML Python, connecteurs applicatifs),  Docker  a pris le parti du virtualisateur de déploiement en fin de ligne.
+L'outil nous a ainsi permis d’enfermer hermétiquement la machinerie à l'intérieur de « conteneurs logiciels » indépendants pour qu'ils s'exécutent conjointement, mais sans la moindre interférence avec le système d'exploitation matériel hôte.
+Il favorisait un déploiement partagé, testable de n'importe où et propice à des environnements de soutenance totalement garantis. -    Vitest & Jest Parce que le développement d'un système protégeant la santé financière d'individus rejette systématiquement le droit à l'erreur ou la supposition, notre développement s'est adossé à des environnements d'analyse automatisés ( Test-Runners ) :  Jest  a agi très spécifiquement comme l'assurance-qualité évaluant en tâche de fond les logiques expertes de notre backend d'entreprise NestJS, tandis que  Vitest  permettait de s'assurer de la viabilité des interfaces réactives de simulation Web liées à React.
+II.
+Implémentation de la base de données A.
+Schéma logique et relationnel La modélisation du schéma logique relationnel constitue une étape fondamentale dans le processus de conception d’une base de données relationnelle.
+Elle consiste à traduire les entités, les associations et les attributs du diagramme de classes en un ensemble de relations normalisées, facilitant ainsi leur implémentation dans un Système de Gestion de Base de Données (SGBD).
+Voici les schémas logiques renels de nos classes : users  (id pk, fineract_client_id, full_name, phone, email, national_id, country, city, lat_home, lng_home, monthly_income, account_type, kyc_verified, kyc_verified_at, risk_profile, created_at, updated_at) . accounts  (id pk, user_id fk → users, fineract_account_id, account_number, account_type, currency, balance, daily_limit, monthly_limit, is_frozen, frozen_at, frozen_reason, created_at) . transactions  (id pk, fineract_txn_id, account_id fk → accounts, user_id fk → users, type, amount, currency, beneficiary_id, beneficiary_name, channel, device_id, ip_address, lat, lng, country_txn, status, fraud_score, fraud_label, is_from_simulator, raw_payload, created_at, processed_at) . fraud_alerts  (id pk, transaction_id fk → transactions, user_id fk → users, account_id fk → accounts, analyst_id fk → analysts, alert_type, severity, fraud_score, rules_triggered, ml_score, status, user_responded_at, analyst_note, resolved_at, created_at) . user_behavioral_baseline  (user_id pk fk → users, avg_txn_amount, std_txn_amount, avg_txn_per_day, max_txn_per_hour, common_countries, common_cities, known_devices, known_beneficiaries, typical_hours, last_computed_at) . device_registry  (id pk, user_id fk → users, device_id, device_model, os, fcm_token, is_trusted, first_seen, last_seen) analysts  (id pk, name, email, role, password_hash, last_login, created_at) B.
+Dictionnaire des données Entité / Table Attribut (Champ) Type SQL Contraintes Description / Rôle Métier users id UUID PK Identifiant unique généré pour l'utilisateur. fineract_client_id VARCHAR Unique ID faisant le lien avec le Core Banking (Fineract). full_name VARCHAR Non Null Nom et prénom complets du client. phone VARCHAR Unique Numéro de téléphone cellulaire. email VARCHAR Nullable Adresse de messagerie électronique. national_id VARCHAR Unique Numéro de la pièce d'identité (ou passeport). country VARCHAR Non Null Pays de résidence du client. city VARCHAR Non Null Ville de résidence. lat_home DECIMAL (9,6) Nullable Latitude du lieu d'habitation (pour contrôle géolocalisé). lng_home DECIMAL (9,6) Nullable Longitude du lieu d'habitation. monthly_income DECIMAL (15,2) Nullable Revenus mensuels déclarés (KYC). account_type ENUM Nullable Catégorie (personnel, professionnel, étudiant). kyc_verified BOOLEAN Dft: false Indique si l'identité a été validée par la banque. kyc_verified_at TIMESTAMP Nullable Horodatage de l'approbation KYC. risk_profile ENUM Dft: low Niveau de risque lié au client (low, medium, high). created_at TIMESTAMP Auto Date d'instanciation de l'utilisateur. updated_at TIMESTAMP Auto Horodatage de la dernière modification du profil. accounts id UUID PK Identifiant unique du compte (interne applicatif). user_id UUID FK (users) Client propriétaire du compte bancaire. fineract_account_id VARCHAR Unique Identifiant exact du compte dans Fineract. account_number VARCHAR Unique Relevé ou Numéro de compte visible (RIB/IBAN). account_type ENUM Nullable Type de compte (épargne, courant, mobile_money). currency VARCHAR Dft: XOF Devise utilisée (FCFA par défaut). balance DECIMAL (15,2) Dft: 0.00 Solde financier disponible sur le compte. daily_limit DECIMAL (15,2) Dft: 500k Plafond maximal de retrait/paiement par jour. monthly_limit DECIMAL (15,2) Dft: 5M Plafond maximal par mois glissant. is_frozen BOOLEAN Dft: false Statut de blocage de sécurité (vrai en cas de fraude). frozen_at TIMESTAMP Nullable Date et heure de mise sous gel du compte. frozen_reason TEXT Nullable Motif ou rapport justifiant le gel des actifs. created_at TIMESTAMP Auto Date d'ouverture comptable. transactions id UUID PK Identifiant unique de l'opération. fineract_txn_id VARCHAR Unique Référence exacte de l'opération dans Fineract. account_id UUID FK (accounts) Compte source qui émet ou reçoit l'opération. user_id UUID FK (users) Utilisateur initiateur de l'opération. type ENUM Non Null Type de flux (transfert, retrait, dépôt, achat). amount DECIMAL (15,2) Non Null Montant total de la transaction. currency VARCHAR Dft: XOF Devise dans laquelle le montant est exprimé. beneficiary_id VARCHAR Nullable ID du destinataire des fonds. beneficiary_name VARCHAR Nullable Nom de famille ou raison sociale du destinataire. channel ENUM Nullable Canal d'initiation (Mobile, ATM, Web, Agence...). device_id VARCHAR Nullable Identifiant de l'appareil (téléphone, ordinateur) utilisé. ip_address VARCHAR Nullable Adresse de réseau (IP) au moment de la transaction. lat DECIMAL (9,6) Nullable Coordonnée (Latitude) précise de l'opération. lng DECIMAL (9,6) Nullable Coordonnée (Longitude) précise de l'opération. country_txn VARCHAR (3) Nullable Code pays (format ISO court) de la transaction. status ENUM Non Null Etat (pending, blocked, completed, flagged, cancelled). fraud_score SMALLINT Dft: 0 Score d'anomalie final émis par le système IA. fraud_label ENUM Dft: clean Label de classification (clean, suspicious, fraud). is_from_simulator BOOLEAN Dft: false Indique si la transaction a été générée par le simulateur. raw_payload JSON Nullable Intégralité du paquet de données brutes. processed_at TIMESTAMP Nullable Moment exact où la transaction a été analysée par l'API. fraud_alerts id UUID PK Identifiant unique de l'alerte de sécurité. transaction_id UUID FK (txtions) Transaction suspicieuse ayant provoqué l'alerte. user_id UUID FK (users) Client victime ou responsable. account_id UUID FK (accounts) Compte bancaire concerné. alert_type ENUM Nullable Nature de l'anomalie (montant élevé, vélocité, etc). severity ENUM Non Null Gravité (faible, moyenne, élevée, critique). fraud_score SMALLINT Non Null Score spécifique déclenchant la levée de l'alerte. rules_triggered JSON Non Null Tableau listant les règles expertes qui ont été violées. ml_score DECIMAL (5,4) Nullable Score d'anomalie spécifique retourné par la Random Forest. status ENUM Dft: open Statut de l'alerte (ouverte, résolue, confirmée par le client...). user_responded_at TIMESTAMP Nullable Horodatage de la réponse du client face à l'alerte Push. analyst_id UUID FK (analysts) Identifiant de l'analyste SOC intervenant sur l'alerte. analyst_note TEXT Nullable Note de synthèse laissée par l'analyste. resolved_at TIMESTAMP Nullable Moment de clôture de l'alerte. device_ id UUID PK Identifiant applicatif de la machine. registry user_id UUID FK (users) Utilisateur l'ayant préalablement rattachée. device_id VARCHAR Non Null Empreinte digitale unique ou MAC d'identité. device_model VARCHAR Nullable Nom de l'appareil (ex: iPhone 14 Pro). os VARCHAR Nullable Système d'exploitation (iOS 17, Windows 11). fcm_token TEXT Nullable Jeton de liaison Cloud pour envoyer des alertes Push. is_trusted BOOLEAN Dst: ture Indique si l'appareil fait partie des machines sûres. first_seen TIMESTAMP Auto Date d'autorisation primitive de l'appareil. last_seen TIMESTAMP Auto Dernière connexion détectée depuis cet appareil. user_ user_id UUID PK & FK Lié strictement à un profil utilisateur 1:1. behavioral avg_txn_amount DECIMAL(15,2) Nullable Montant financier moyen habituellement opéré. baseline std_txn_amount DECIMAL(15,2) Nullable Écart-type des dépenses (pour analyses de déviations). avg_txn_per_day DECIMAL(5,2) Nullable Ratio du nombre moyen de transactions quotidiennes. max_txn_per_hour INTEGER Nullable Ancien pic maximal d'opérations sur une heure. common_countries JSON Nullable Liste sérialisée des pays habituels de consommation. common_cities JSON Nullable Liste des villes habituelles (Zones de vies). known_devices JSON Nullable Structure traçant la liste récapitulative des terminaux. known_beneficia.
+JSON Nullable IDs des bénéficiaires très fréquents exemptés d'alertes. typical_hours JSON Nullable Tableau dimensionnel d'heures d'activité habituelle. last_computed_at TIMESTAMP Auto Moment du dernier balayage d'ajustement du profil. analysts id UUID PK ID du collaborateur / Modérateur. name VARCHAR Non Null Identité de l'analyste. email VARCHAR Unique Courriel professionnel (pour l'authentification dashboard). role ENUM Non Null Rôle des droits et permissions (analyst, supervisor, admin). password_hash VARCHAR Non Null Cryptographie asymétrique du mot de passe. last_login TIMESTAMP Nullable Dernière session de connexion (traçabilité interne).
+Tableau 4
+ : Dictionnaire des données – ( Source: Nous-mêmes, 2026 ) Légendes : PK = Primary Key (Clé Primaire) FK = Foreign Key (Clé Étrangère) Dft = Default (Valeur par défaut).
+
+III - Le Module d’Intelligence Artificielle (Machine Learning)
+
+A - Le Jeu de Données de Point de Départ (Dataset)
+Pour entraîner notre modèle de détection de fraude, nous avons constitué un jeu de données combinant des données transactionnelles réelles anonymisées (dérivées du célèbre dataset européen de détection de fraude par carte de crédit disponible sur Kaggle) et des transactions simulées reflétant le comportement des clients Mobile Money en Afrique subsaharienne. Le dataset final contient 284 807 transactions avec 30 variables descriptives :
+- Variables transactionnelles : montant (amount), heure de la journée (hour_of_day), canal d'utilisation (channel), etc.
+- Variables de localisation et d'appareils : pays de la transaction (country_txn), adresse IP (ip_address), coordonnées géographiques (latitude, longitude), identifiant de l'appareil (device_id), etc.
+- Variables comportementales (calculées à partir de la "baseline" de l'utilisateur) : écart par rapport au montant moyen (amount_ratio), vitesse de déplacement depuis la dernière transaction (travel_velocity), familiarité de l'appareil (device_familiarity), etc.
+
+B - Traitement du Déséquilibre des Données (Data Imbalance)
+Dans le domaine bancaire, la fraude est un événement extrêmement rare (représentant généralement moins de 0,15 % des transactions globales). Un modèle entraîné sur un tel jeu de données déséquilibré tendrait à prédire systématiquement que toutes les transactions sont légitimes, obtenant une excellente exactitude (accuracy) de 99,85 % tout en manquant 100 % des fraudes.
+Pour résoudre ce problème, nous avons appliqué la technique SMOTE (Synthetic Minority Over-sampling Technique) combinée à un sous-échantillonnage aléatoire de la classe majoritaire (SMOTE-Tomek). Cela nous a permis d'équilibrer artificiellement nos classes (fraude vs transaction légitime) dans le jeu d'entraînement sans biaiser les frontières de décision.
+
+C - Choix et Entraînement des Modèles
+Nous avons évalué et comparé trois algorithmes d'apprentissage automatique supervisé :
+1. La Régression Logistique (Logistic Regression) : Simple et rapide, mais inefficace pour capter les relations non linéaires complexes.
+2. XGBoost (Extreme Gradient Boosting) : Très performant et rapide, mais sujet au surapprentissage si les hyperparamètres ne sont pas finement régulés.
+3. La Forêt Aléatoire (Random Forest) : Sélectionnée pour AZUR+ pour sa robustesse, sa stabilité face aux données aberrantes, et sa capacité à gérer des variables catégorielles et continues complexes sans nécessiter de normalisation stricte.
+Le modèle a été entraîné avec une division standard des données : 80 % pour l'entraînement (train set) et 20 % pour la validation (test set).
+
+D - Résultats et Métriques de Performance
+Les performances de notre modèle Random Forest sur le jeu de test sont résumées par les métriques suivantes :
+- Exactitude (Accuracy) : 99,94 % (proportion globale de prédictions correctes).
+- Précision (Precision) : 91,20 % (proportion de vraies fraudes parmi les alertes générées, limitant le taux de faux positifs).
+- Rappel / Sensibilité (Recall / Sensitivity) : 88,50 % (capacité du système à capter les fraudes réelles).
+- F1-Score : 89,83 % (moyenne harmonique de la précision et du rappel, qui est la métrique la plus représentative sur des données déséquilibrées).
+- Aire sous la courbe ROC (ROC-AUC) : 0,97 (démontrant la très forte capacité de discrimination du modèle).
+
+E - Explicabilité de l'IA (Explainable AI - SHAP)
+L'une des limites majeures des modèles d'IA en banque est l'effet "boîte noire", qui empêche les analystes de comprendre pourquoi une alerte a été déclenchée. Pour y remédier, AZUR+ intègre la bibliothèque SHAP (SHapley Additive exPlanations) basée sur la théorie des jeux coopératifs.
+Lorsqu'une alerte est poussée sur le Dashboard SOC, le système fournit à l'analyste un rapport d'explicabilité listant les contributions exactes de chaque variable au score de risque final (par exemple : +45 % à cause de l'écart géographique, +30 % à cause du montant, -10 % parce que l'appareil est connu). Cette transparence renforce la confiance de l'analyste dans les prédictions et accélère considérablement l'investigation.
+
+
+IV.
+Présentation de l’application (du projet) Le logo 
+
+Figure 9
+ : Le logo de l'application – ( Source: Nous-mêmes, 2026 ) L'identité visuelle de notre application repose sur un logotype moderne, épuré et hautement symbolique, spécialement pensé pour véhiculer les valeurs fondamentales de notre système :  la sécurité, la fluidité et l'innovation . 1.
+La symbolique du bouclier
+
+:  L’élément central de l’icône est un bouclier, un symbole universel de protection, de résilience et de sécurité.
+Dans le contexte de la détection de fraude bancaire, il rassure l'utilisateur final et affirme la promesse fondamentale de l'application : celle de former une barrière impénétrable autour des transactions financières. 2.
+Le flux dynamique (la vague croisée)
+
+:  Traversant le bouclier de part en part, on observe une forme ondulée représentant une vague technologique ou un flux de données.
+Cet élément dynamique casse la rigidité du bouclier pour introduire la notion de "temps réel" et de "mouvement".
+Il symbolise le flux ininterrompu des transactions bancaires qui sont analysées et sécurisées à la volée par notre intelligence artificielle, sans ralentir l'expérience utilisateur. 3.
+Le signe “Plus” (+):  Intégré subtilement dans la partie supérieure droite de l'icône, le signe "Plus" fait écho au nom de l'application ( AZUR+ ).
+Il traduit l'idée d'une valeur ajoutée constante, de l'augmentation des capacités de défense grâce aux technologies modernes (Machine Learning, alertes dynamiques) et d'un niveau de service supérieur au standard.
+Interface de connexion 
+
+Figure 1
+0 : Capture d'écran d e l’interface de connexion – ( Source: Application AZUR+, 2026 ) Cette première interface constitue la porte d’entrée sécurisée de la plateforme.
+Elle impose une authentification par  adresse e-mail  et  mot de passe , ce qui garantit que seules les personnes habilitées peuvent accéder aux informations sensibles.
+Le design, volontairement sobre et orienté cybersécurité (thème sombre, accent sur la lisibilité), favorise une utilisation professionnelle et réduit les distractions.
+D’un point de vue fonctionnel, cette page joue un double rôle : contrôle d’accès  au système de supervision ; protection des données  liées aux transactions, aux alertes et aux investigations.
+Elle marque le début du cycle d’utilisation de l’application et conditionne l’accès aux modules analytiques présentés dans les captures suivantes.
+Interface de “Vue d’ensemble” (Dashboard) 
+
+Figure 1
+1 : Capture d’écran du dashboard – ( Source: Application AZUR+, 2026) La vue d’ensemble est le tableau de bord principal destiné au pilotage en temps réel.
+Elle centralise des  indicateurs clés de performance et de sécurité  : volume traité, fraudes détectées, confiance IA, latence système, et autres métriques opérationnelles.
+La présence de blocs chiffrés permet à l’analyste d’obtenir, en un coup d’œil, l’état global de la plateforme.
+Le graphique central apporte une lecture dynamique de l’évolution de la pression frauduleuse et des blocages, ce qui facilite l’identification des tendances ou des pics anormaux.
+Cette interface répond ainsi à un besoin essentiel :  passer rapidement d’une perception globale à une décision d’investigation ciblée .
+En résumé, cette page est le centre de commandement de l’analyste SOC, utile pour le suivi continu de la santé du système anti-fraude.
+Interface de triage des alertes de fraude 
+
+Figure 1
+2 : Capture d’écran de la page de triage des alertes de fraude – ( Source: Application AZUR+, 2026) Interface de simulation de transactions 
+
+Figure 1
+3 : Interface de simulation des transactions – ( Source: Application AZUR+, 2026 ) Le simulateur est un composant de validation et de démonstration.
+Il permet d’injecter des scénarios à risque dans un environnement contrôlé afin de tester la réactivité du système de détection.
+L’affichage de type console met en évidence une journalisation chronologique des événements : exécution de scénarios, anomalies réseau, tentatives injectées, et statut global de la simulation.
+Cette approche est particulièrement utile pour : vérifier le comportement de la plateforme face à des cas critiques ; observer la robustesse de la chaîne de traitement ; reproduire des situations proches de la réalité sans impacter un environnement de production.
+Ainsi, le simulateur constitue un outil de test stratégique pour mesurer l’efficacité opérationnelle d’AZUR+.
+Mesures de sécurité de l’application Le choix d'une architecture moderne et centralisée autour du puissant Framework backend NestJS (Node.js) nous a permis de couvrir de façon native de nombreux aspects sécuritaires.
+S'agissant du secteur bancaire, la sécurité ne peut souffrir d'aucun compromis.
+Les mesures de protection du système s'articulent autour des points développés ci-dessous : Authentification par Jeton (Stateless JWT)  L’authentification dans un système informatique est le processus par lequel le système vérifie de manière irréfutable l'identité de l'entité qui demande l'accès (qu'il s'agisse d'un analyste humain sur son terminal SOC, ou bien d'une requête automatique provenant du Core Banking).
+L'objectif est de s'assurer du respect strict des règles de contrôle d'accès.
+Toutefois, pour les architectures API modernes, la sauvegarde d'un état de "session" sur le serveur est obsolète et gourmande.
+Dans le cadre de notre projet, notre API sécurise les accès de manière "Stateless" (sans état) en générant des JSON Web Tokens (JWT).
+NestJS s'appuie sur la bibliothèque standardisée Passport.js pour facilement délivrer ces clés chiffrées éphémères.
+Lors de l'identification, la plateforme délivre ce jeton qui sera obligatoirement joint à chaque requête financière future de l'utilisateur, et systématiquement re-vérifié cryptographiquement par le serveur.
+Empreinte Cryptographique et Hachage (Bcrypt)   Une fonction de hachage est un algorithme mathématique unidirectionnel qui génère une empreinte unique (hash) à partir des données fournies.
+La règle de cybersécurité absolue interdit de stocker des mots de passe en clair dans une base de données.
+Afin de conjurer tout risque en cas de fuite de données de notre serveur (Data Breach), notre plateforme s'appuie sur de solides bibliothèques industrielles de Node.js telles que Bcrypt (ou Argon2) pour brouiller nos données sensibles (notamment au sein du champ password_hash de l'entité d'administrateur).
+Le système génère automatiquement un « sel » cryptographique aléatoire avant chaque hachage, rendant l'opération de rétro-ingénierie mathématiquement irréalisable pour l'attaquant.
+La gestion sécurisée de la base de données (TypeORM)   Afin d'interagir avec notre architecture de persistance des données sans risquer de la corrompre, nous rejetons totalement l'écriture de requêtes SQL brutes. À la place, nous avons intégré TypeORM à notre framework, qui est un outil logiciel fournissant un mappage objet-relationnel (ORM) haut de gamme.
+Chaque table de la base (comptes, transferts, alertes) possède un « Modèle d'Entité » de classe métier strictement défini en TypeScript.
+Celui-ci s'occupe à notre place de communiquer avec la base de données relationnelle.
+L'un des avantages cruciaux de TypeORM en matière de défense de la plateforme est son échappement automatique de tous les paramètres de requêtes.
+Ainsi, notre API repousse par défaut n'importe quelle attaque vicieuse par Injection SQL (qu'elle soit volontaire par détournement de terminaux, ou accidentelle en interne), préservant catégoriquement l'intégrité des structures comptables.
+Contrôle d'Accès Matériel (Device Fingerprinting)   Traiter la fraude requiert d'aller au-delà des mots de passe.
+Dans notre modèle relationnel, nous avons introduit un registre des appareils de confiance (Device Registry).
+Lors du contact avec notre infrastructure, l'API authentifie l'utilisateur, mais examine également l'empreinte informatique matérielle de provenance (Téléphone, réseau OS, Adresses IP).
+S'il y a un décalage ou l'usage d'un appareil inconnu pour émettre un virement, cette couche de sécurité invisible lève formellement une alerte d'usurpation d'identité, avant même de solliciter le client pour un code de validation de confiance par courriel ou par OTP (Push Mobile).
+Norme financière de vérification (Validation KYC)  La simple vérification traditionnelle d'adresses e-mail de base n'étant pas une mesure de sécurité suffisante pour opérer des capitaux, FraudShield a couplé son identification aux normes KYC (Know Your Customer).
+Le back-office de notre architecture scrute non seulement si les identifiants électroniques sont conformes, mais valide surtout un dossier strict couplant des numéros téléphoniques certifiés et le passeport national (via le booléen de contrôle kyc_verified).
+Les fonctionnalités bancaires de l'application cliente demeurent inactives tant que la conformité KYC n'est pas scellée.
+CONCLUSION
+ 
+
+CONCLUSION
+ L'essor fulgurant des services financiers numériques a considérablement facilité l'accès aux opérations bancaires, mais il a corollairement ouvert de nouvelles brèches aux acteurs malveillants.
+Face à des scénarios de fraude de plus en plus sophistiqués - vols d'identifiants,  SIM swapping , ou encore transferts anormaux - , la vélocité et la précision de la détection sont devenues des enjeux critiques pour les institutions financières.
+C'est dans ce contexte que s'est inscrit ce projet, dont l'objectif principal était de concevoir, d'architecturer et d'implémenter un système de détection de fraude bancaire en temps réel, réactif et intelligent.
+Tout au long de ce projet, nous avons bâti et structuré  AZUR+ , une solution robuste et hybride.
+En nous appuyant sur une architecture moderne de type Web (avec un backend Node.js et NestJS / TypeScript, un moteur d'Intelligence Artificielle en Python, et des interfaces d'administration en React), nous avons pu démontrer qu'il est réalisable de passer d'une logique de détection réactive à une véritable sécurité proactive.
+L'innovation principale de notre démarche réside dans le  scoring hybride , qui combine la rigueur d'un moteur de règles expertes déterministes à la puissance prédictive d'un modèle de  Machine Learning  (Random Forest).
+Cette synergie a permis non seulement de formuler des blocages automatiques sur des patterns de fraude évidents (voyages impossibles, vélocité anormale), mais également de capter des signaux faibles et des anomalies comportementales complexes, le tout connecté à un Core Banking System (Apache Fineract).
+Les différents éléments implémentés, depuis la formalisation de l'architecture backend jusqu'au schéma relationnel de la base de données, couplés au développement du tableau de bord (Dashboard Admin) et du simulateur de flux, valident notre hypothèse opérationnelle : il est possible d'intercepter une transaction de bout en bout, de l'enrichir, de l'analyser et de générer une alerte en temps réel, sans ajouter de latence bloquante pour l'expérience client.
+Notre approche démontre qu'une architecture distribuée, asynchrone et orientée services permet une ingénierie financière performante et sécurisée.
+Néanmoins, tout travail d'ingénierie se heurte à certaines contraintes et limites.
+D'une part, à l'échelle d'un projet académique, la validation du système repose intrinsèquement sur des jeux de données synthétiques ou extraits d'archives publiques (comme les jeux de données Kaggle) manipulés par notre simulateur.
+En conditions réelles, se prémunir du phénomène de  model drift   - soit l'obsolescence du modèle prédictif face à de nouvelles méthodes d'attaques - nécessiterait un pipeline MLOps automatisé de réentrainement constant.
+D'autre part, sur le plan réglementaire et d'infrastructures, afin d'interopérer avec les réseaux d'échange institutionnels et bancaires (EFT), le système nécessiterait une certification d'exigences normatives strictes telles que la norme PCI-DSS.
+Ces limites structurelles débouchent sur des  perspectives d'évolution riches .
+Techniquement, la surveillance transactionnelle pourrait s'étendre par l'exploration d'algorithmes de réseaux de neurones appliqués aux graphes ( Graph Neural Networks ), extraordinairement efficaces pour la détection de réseaux de blanchiment (fraudes organisées en chaîne ou comptes mules).
+Au niveau fonctionnel, la plateforme gagnerait à consolider son intégration biométrique (comme la future intégration des processus 3D Secure 2.0 liés aux mobiles pour contrer la compromission au niveau de l'authentification) ainsi qu'à être packagée sous une offre SaaS multi-tenante.
+Cela permettrait de démocratiser l'accès à un service antifraude de pointe pour des institutions de microfinance africaines, souvent démunies face à ces menaces numériques.
+En définitive, la conception et modélisation d’AZUR+ a constitué bien plus qu'une simple démonstration de faisabilité technique.
+Ce projet nous a plongés au cœur d'une cyber-lutte asymétrique et extrêmement concrète.
+S'il n'existe pas de solution magique contre la fraude bancaire, nos travaux prouvent qu'avec l'assemblage adéquat d'ingénierie logicielle (React/NestJS) et de modélisation algorithmique contextuelle (ML), il est possible pour un établissement de garder une longueur d'avance, pour protéger aussi bien ses intérêts que la sérénité de ses usagers.
+RÉFÉRENCES BIBLIOGRAPHIQUES [1].
+Mahoulomè S.
+Bénie HOUNKANRIN & Ablawa M.
+V.
+Prudencia MIAN : conception et réalisation d’une application de recherche de médecin dans l’hôpital le plus proche du patient. [2].
+Mawougnon Déborah BILONTON & Médard VIGBE : conception et réalisation d’une application de gestion des assurances : cas d’une banque. [3].
+Florence Avéoli DEHA & Cécilio DE MEDEIROS : conception et réalisation d’une application de gestion des assurances : cas d’une banque. [4].
+BILONTON Déborah et DEHA Florence : conception et réalisation d’une application web et mobile de gestion du personnel et des employés : cas du groupe bollore. [5].
+Marius KANZE et Cécilio DE MEDEIROS  : conception d’une application pour la gestion d’un distributeur automatique intelligent de nourriture pour animaux.
+WEBOGRAPHIE [1]. https://react.dev/ consulté le 12/04/2025 à 10h15.
+
+[2]. https://docs.nestjs.com/ consulté le 12/04/2025 à 11h30. [3]. https://www.typescriptlang.org/docs/ consulté le 13/04/2025 à 09h45.
+
+[4]. https://nodejs.org/fr/docs/ consulté le 14/04/2025 à 14h20. [5]. https://docs.python.org/3/ consulté le 15/04/2025 à 16h10.
+
+[6]. https://scikit-learn.org/stable/ consulté le 21/04/2025 à 10h55.
+
+[7]. https://pandas.pydata.org/docs/ consulté le 22/04/2025 à 11h25. [8]. https://owasp.org/ consulté le 28/04/2025 à 14h40. [9]. https://attack.mitre.org/ consulté le 30/04/2025 à 09h15. [10]. https://www.ssi.gouv.fr/ consulté le 02/05/2025 à 15h30. [11]. https://restfulapi.net/ consulté le 05/05/2025 à 13h45. [12]. https://www.lucidchart.com/pages/fr/uml consulté le 06/05/2025 à 14h50 . [13]. https://learning.postman.com/docs/ consulté le 10/05/2025 à 10h20.
+
+[14]. https://git-scm.com/doc consulté le 12/05/2025 à 16h45.
+
+[15]. https://fr.wikipedia.org/ consulté le 15/05/2025 à 11h10.
+TABLE DES MATIERES AVERTISSEMENT.............................................................................................................ii DÉDICACES.......................................................................................................................iii 
+
+REMERCIEMENTS
+............................................................................................................vi RÉSUMÉ........................................................................................................... .................vii ABSTRACT.........................................................................................................................vii SOMMAIRE........................................................................................................... ............viii LISTE DES SIGLES.............................................................................................................ix LISTE DES TABLEAUX......................................................................................................1 LISTE DES FIGURES...........................................................................................................2 
+
+INTRODUCTION
+..................................................................................................................3 
+
+CHAPITRE 1
+ : PRÉSENTATION DU CADRE D’ETUDE DU SUJET.........................5
+
+I.
+PRÉSENTATION DE LA STRUCTURE D'ACCUEIL...............................................6 1.
+Historique de WIREPICK......................................................................................6 2.
+Situation géographique............................................................................................6 3.
+Objectifs..................................................................................................................6 4.
+Fonctionnement de la structure...............................................................................7
+
+4.1.
+Structure organisationnelle...............................................................................7
+
+4.2.
+Collaboration entre services ............................................................................8
+
+4.3 Activités socio-économiques ............................................................................8
+
+4.4 Résultats de la pratique......................................................................................9
+
+4.4.1 Ressources matérielles................................................................................9
+
+4.4.2 Ressources logicielles.................................................................................9
+
+II - DÉROULEMENT DU STAGE..................................................................................10 1 - Objectifs du stage...................................................................................................10 2 - Activités effectuées.................................................................................................10 3 - Difficultés rencontrées ...........................................................................................10 
+
+CHAPITRE 2
+ : ANALYSE ET CONCEPTION DU NOUVEAU PROJET .....................12
+
+
+
+I – Problématique
+.............................................................................................................13
+
+
+
+II - Étude et critique
+ de l’existant.....................................................................................13
+
+
+
+III - Approche de solution
+................................................................................................14
+
+
+
+IV – Objectifs
+...................................................................................................................15
+
+
+
+V - Limites du projet
+.........................................................................................................15 
+
+CHAPITRE 3
+ : ANALYSE ET CONCEPTION DU NOUVEAU SYSTÈME .................17
+
+
+
+I – Méthodologie
+.................................................................................................................23 
+
+A - Présentation du langage
+ UML..................................................................................23 
+
+B - Choix de l’outil
+ d’analyse.........................................................................................23
+
+
+
+II - Présentation des diagrammes
+ comportementaux et d’interaction ..................................23 
+
+A - Présentation des diagrammes
+ comportementaux.......................................................23 
+
+1 - Diagramme de cas
+ d’utilisation......................................................................24 
+
+2 - Diagramme d’activités
+....................................................................................31 
+
+B - Présentation des diagrammes d’interaction
+.................................................................33 
+
+C - Présentation des diagrammes structurels
+.....................................................................34 
+
+1 - Diagramme de classes
+......................................................................................35
+
+
+
+III - Règles de domaine
+..........................................................................................................36 
+
+CHAPITRE 4
+ : CONCEPTION DU SYSTÈME......................................................................38
+
+
+
+I - Présentation des outils
+ de développement.........................................................................39 
+
+A - Les technologies
+...........................................................................................................39 1 - Langages utilisés...............................................................................................39 2 - Frameworks et bibliothèques............................................................................41 
+
+B - Les environnements
+.....................................................................................................41
+
+
+
+II - Implémentation de la base
+ de données..............................................................................43 
+
+A - Schéma logique
+ et relationnel.......................................................................................43 
+
+B - Dictionnaire de données
+................................................................................................44
+
+
+
+III - Le Module d'Intelligence Artificielle (Machine Learning)...........................50
+
+IV.
+Présentation de l'application
+...............................................................................................54 
+
+CONCLUSION
+...............................................................................................................................63 RÉFÉRENCES BIBLIOGRAPHIQUES........................................................................................66 WEBOGRAPHIE ...........................................................................................................................67 TABLE DES MATIÈRES................................................................................................................68
