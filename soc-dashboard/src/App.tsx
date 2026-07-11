@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
 import { useRealTimeData } from './hooks/useRealTimeData';
@@ -23,6 +24,7 @@ export default function App() {
       <>
         <Toaster theme="light" position="top-right" />
         <LoginView onLogin={() => setIsAuthenticated(true)} />
+        <Analytics />
       </>
     );
   }
@@ -30,6 +32,7 @@ export default function App() {
   return (
     <Router>
       <Toaster theme="light" position="top-right" />
+      <Analytics />
       <div className="h-screen bg-[var(--color-bg-main)] flex flex-row overflow-hidden text-[var(--color-text-main)]">
         <Sidebar />
         
